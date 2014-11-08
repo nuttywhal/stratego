@@ -1,5 +1,7 @@
 package edu.asu.stratego.game;
 
+import javafx.application.Platform;
+
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.gui.ConnectionScene;
 
@@ -30,7 +32,7 @@ public class ClientGameManager extends Thread {
     @Override
     public void run() {
         connectToServer();
-        System.out.println("Connection has been established!");
+        waitForOpponent();
         
         // TODO Implement the rest of ClientGameManager here.
     }
@@ -42,6 +44,9 @@ public class ClientGameManager extends Thread {
      * @see edu.asu.stratego.gui.ConnectionScene.ConnectToServer
      */
     private void connectToServer() {
+        // Set the ClientStage scene.
+        Platform.runLater(() -> { stage.setConnectionScene(); });
+        
         try {
             ConnectionScene.ConnectToServer connectToServer = 
                     new ConnectionScene.ConnectToServer();
@@ -54,5 +59,10 @@ public class ClientGameManager extends Thread {
             // TODO Handle this error somehow...
             e.printStackTrace();
         }
+    }
+    
+    private void waitForOpponent() {
+        // Set the ClientStage scene.
+        Platform.runLater(() -> { stage.setWaitingScene(); });
     }
 }

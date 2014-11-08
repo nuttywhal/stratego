@@ -14,7 +14,9 @@ import javafx.stage.Stage;
 public class ClientStage extends Stage {
     
     ConnectionScene connection;
-    Socket socket;
+    WaitingScene    waiting;
+    
+    static Socket socket;
     
     /**
      * Creates a new instance of ClientStage.
@@ -26,7 +28,7 @@ public class ClientStage extends Stage {
         this.setResizable(false);
         this.show();
         
-        this.socket = socket;
+        ClientStage.socket = socket;
     }
     
     /**
@@ -34,7 +36,16 @@ public class ClientStage extends Stage {
      * @see edu.asu.stratego.gui.ConnectionScene
      */
     public void setConnectionScene() {
-        connection = new ConnectionScene(socket);
+        connection = new ConnectionScene();
         this.setScene(connection.scene);
+    }
+    
+    /**
+     * Switch to the Waiting Scene.
+     * @see edu.asu.stratego.gui.WaitingScene
+     */
+    public void setWaitingScene() {
+        waiting = new WaitingScene();
+        this.setScene(waiting.scene);
     }
 }

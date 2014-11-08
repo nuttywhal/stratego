@@ -21,22 +21,20 @@ public class ConnectionScene {
     private final int WINDOW_WIDTH  = 300;
     private final int WINDOW_HEIGHT = 150;
     
-    private static Label statusLabel   = new Label();
-    private Button       submitFields  = new Button("Enter Battlefield");
-    private TextField    nicknameField = new TextField();
-    private TextField    serverIPField = new TextField();
+    private Button    submitFields  = new Button("Enter Battlefield");
+    private TextField nicknameField = new TextField();
+    private TextField serverIPField = new TextField();
+    static  Label     statusLabel   = new Label();
     
     static String nickname;
     static String serverIP;
-    static Socket socket;
     
     Scene scene;
     
     /**
      * Creates a new instance of ConnectionScene.
-     * @param socket connection socket used to connect the client to the server
      */
-    ConnectionScene(Socket socket) {
+    ConnectionScene() {
         // Create UI.
         GridPane gridPane = new GridPane();
         gridPane.add(new Label("Nickname: "), 0, 0);
@@ -59,9 +57,6 @@ public class ConnectionScene {
         
         // Event Handler.
         submitFields.setOnAction(e -> Platform.runLater(new ProcessFields()));
-        
-        // Connection Socket.
-        ConnectionScene.socket = socket;
         
         scene = new Scene(borderPane, WINDOW_WIDTH, WINDOW_HEIGHT);
     }
@@ -132,14 +127,14 @@ public class ConnectionScene {
     public static class ConnectToServer implements Runnable {
         @Override
         public void run() {
-            while (socket == null) {
+            while (ClientStage.socket == null) {
                 synchronized (playerLogin) {
                     try {
                         // Wait for submitFields button event.
                         playerLogin.wait();
                         
                         // Attempt connection to server.
-                        socket = new Socket(serverIP, 4212);
+                        ClientStage.socket = new Socket(serverIP, 4212);
                     }
                     catch (IOException | InterruptedException e) {
                         Platform.runLater(() -> {

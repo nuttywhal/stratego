@@ -10,17 +10,15 @@ import edu.asu.stratego.gui.ClientStage;
 
 public class Client extends Application {
     
-    // Connection socket to the server.
-    private static Socket socket;
+    private Socket socket;
     
     /**
      * The Main entry point for the Client application.
      */
     @Override
     public void start(Stage primaryStage) {
-        // Display client GUI.
+        // Display client GUI on the JavaFX Application thread.
         ClientStage client = new ClientStage(socket);
-        client.setConnectionScene();
         
         // Control the game on a separate thread.
         ClientGameManager manager = new ClientGameManager(client);
