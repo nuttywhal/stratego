@@ -15,8 +15,10 @@ import edu.asu.stratego.stages.ConnectionStage;
  * has successfully connected to a Stratego server.
  */
 public class ClientGameManager extends Thread {
+    
     private Player player = new Player();
-    private Player opponent = new Player();
+    private String opponent;
+    
     private final Object isConnected;
     private Stage connectionStage;
     private Socket socket;
@@ -51,49 +53,73 @@ public class ClientGameManager extends Thread {
      */
     @Override
     public void run() {
+        
+        waitConnection();
+        establishIOStreams();
+            
+        sendNickname();     // O - Send player information to server.
+        receiveColor();     // I - Updates player information from server.
+        getOpponentName();  // I - Updates opponent information from server.
+        
+        // TODO Implement the rest of ClientGameManager here.
+    }
+    
+    /**
+     * Waits for a successful connection between the client and the server.
+     * Once a connection has been established, retrieve the socket and the 
+     * player's name. Then, change the Stage scene.
+     */
+    private void waitConnection() {
         synchronized (isConnected) {
             try {
-                // Wait for client to successfully connect to server.
                 isConnected.wait();
-                
-                // Retrieve socket and player nickname. 
+                 
                 player.setNickname(((ConnectionStage) connectionStage).getNickname());
                 socket = ((ConnectionStage) connectionStage).getSocket();
                 
-                // Close and remove the ConnectionStage window.
                 Platform.runLater(() -> {
-                    connectionStage.close();
-                    connectionStage = null;
+                    ((ConnectionStage) connectionStage).setLoadingScreen();
+                    //connectionStage = null;
                 });
             }
             catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        
+    }
+    
+    /**
+     * Establish IO object streams to facilitate communication between the 
+     * client and server.
+     */
+    private void establishIOStreams() {
         try {
             toServer = new ObjectOutputStream(socket.getOutputStream());
             fromServer = new ObjectInputStream(socket.getInputStream());
-            
-            /* Set up the game session. */
-            toServer.writeObject(player);  // O - Send player information to server.
-            updatePlayer();                // I - Updates player information from server.
-            updateOpponent();              // I - Updates opponent information from server.
-            
-            // TODO Implement the rest of ClientGameManager here.
-            
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
     
     /**
-     * Updates the client-side player information with the server-side player 
-     * information.
+     * Send the player's nickname to the server.
      */
-    private void updatePlayer() {
+    private void sendNickname() {
         try {
-            player = (Player) fromServer.readObject();
+            toServer.writeObject(player.getNickname());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Receive the player's color from the server.
+     */
+    private void receiveColor() {
+        try {
+            player.setColor((PieceColor) fromServer.readObject());
         }
         catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
@@ -101,12 +127,11 @@ public class ClientGameManager extends Thread {
     }
     
     /**
-     * Updates the client-side opponent information with the server-side 
-     * opponent information.
+     * Receive the opponent's nickname from the server.
      */
-    private void updateOpponent() {
+    private void getOpponentName() {
         try {
-            opponent = (Player) fromServer.readObject();
+            opponent = (String) fromServer.readObject();
         }
         catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();

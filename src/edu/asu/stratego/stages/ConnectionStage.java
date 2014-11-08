@@ -10,9 +10,8 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 /**
- * The ConnectionStage class, which inherits from the JavaFX Stage
- * class, is a preset Stage for retrieving network connection
- * information from the player.
+ * The ConnectionStage class, which inherits from the JavaFX Stage class, is a 
+ * preset Stage for retrieving network connection information from the player.
  */
 public class ConnectionStage extends Stage {
     
@@ -35,6 +34,9 @@ public class ConnectionStage extends Stage {
     private TextField serverIPField = new TextField();
     private Label statusLabel = new Label();
     
+    private final int WIDTH = 300;
+    private final int HEIGHT = 150;
+    
     /**
      * Creates a new instance of ConnectionStage.
      * 
@@ -42,6 +44,7 @@ public class ConnectionStage extends Stage {
      * outside threads and the ConnectToServer task.
      */
     public ConnectionStage(Object isConnected) {
+        
         this.isConnected = isConnected;
         
         // Initiate task to connect to Stratego server.
@@ -69,7 +72,7 @@ public class ConnectionStage extends Stage {
         gridPane.setHgap(5);
         gridPane.setVgap(5);
         
-        Scene scene = new Scene(borderPane, 300, 150);
+        Scene scene = new Scene(borderPane, WIDTH, HEIGHT);
         this.setTitle("Stratego");
         this.setResizable(false);
         this.setScene(scene);
@@ -159,6 +162,18 @@ public class ConnectionStage extends Stage {
                 isConnected.notifyAll();
             }
         }
+    }
+    
+    /**
+     * Changes the scene to a loading screen.
+     */
+    public void setLoadingScreen() {
+        // Create UI.
+        Pane pane = new Pane();
+        pane.getChildren().add(new Label("Waiting for an opponent..."));
+        
+        Scene scene = new Scene(pane, WIDTH, HEIGHT);
+        this.setScene(scene);
     }
     
     /**

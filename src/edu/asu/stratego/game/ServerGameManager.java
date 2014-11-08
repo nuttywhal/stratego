@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Date;
 
 import edu.asu.stratego.game.PieceColor;
 
@@ -14,27 +13,27 @@ import edu.asu.stratego.game.PieceColor;
  * turn it is and allowing only valid moves. 
  */
 public class ServerGameManager implements Runnable {
-    private final String logPrefix;
     
-    private Player player1 = new Player();
-    private Player player2 = new Player();
+    private final int sessionNumber;
+    private final String session;
     
     private Socket socketP1;
     private Socket socketP2;
+    
+    private Player player1 = new Player();
+    private Player player2 = new Player();
     
     private ObjectInputStream fromPlayer1;
     private ObjectOutputStream toPlayer1;
     private ObjectInputStream fromPlayer2;
     private ObjectOutputStream toPlayer2;
     
-    private final int sessionNumber;
-    
     /**
      * Creates a new instance of ServerGameManager.
      * 
      * @param player1 socket connected to Player 1's client
      * @param player2 socket connected to Player 2's client
-     * @param sessionNumber the nth session created by Server.
+     * @param sessionNumber the nth game session created by Server.
      * 
      * @see edu.asu.stratego.Server
      */
@@ -43,7 +42,7 @@ public class ServerGameManager implements Runnable {
         this.socketP1 = player1;
         this.socketP2 = player2;
         
-        logPrefix = "Session " + sessionNumber + " - ";
+        session = "Session " + sessionNumber + ": ";
     }
     
     /**
@@ -56,17 +55,16 @@ public class ServerGameManager implements Runnable {
      */
     @Override
     public void run() {
-        /* Set up the game session. */
-        establishIOStreams();     // Establish IO streams for communication.
-        retrievePlayerObjects();  // I - Receive client player information.
-        determinePlayerColors();  // === Flip a coin to determine player colors.
-        updatePlayerObjects();    // O - Update client player information.
-        sendOpponentObjects();    // O - Send opponent information to clients.
         
-        System.out.println(new Date() + " - " + logPrefix + 
-                           player1.getNickname() + " (" + player1.getColor() + ") and " + 
-                           player2.getNickname() + " (" + player2.getColor() + ") are " + 
-                           "preparing their armies for battle.");
+        establishIOStreams();
+        getPlayerColors();
+        
+        receiveNames();       // I - Receive player names from clients.
+        sendColors();         // O - Send player colors to clients.
+        sendOpponentNames();  // O - Send opponent names to clients.
+        
+        System.out.println(session + player1.getNickname() + " (" + player1.getColor() + ") vs. " + 
+                                     player2.getNickname() + " (" + player2.getColor() + "), START!");
         
         // TODO Implement the rest of ServerGameManager here.
     }
@@ -85,60 +83,53 @@ public class ServerGameManager implements Runnable {
             fromPlayer2 = new ObjectInputStream(socketP2.getInputStream());
         }
         catch(IOException | NullPointerException e) {
-            System.err.println(new Date() + " - " + logPrefix + "Failed to establish " + 
-                               "IO streams between client and server");
+            System.err.println(session + "Failed to establish client/server IO streams");
         }
     }
     
     /**
-     * Updates the server-side player information with the client-side player 
-     * information.
+     * Receive player nicknames from the clients.
      */
-    private void retrievePlayerObjects() {
+    private void receiveNames() {
         try {
-            player1 = (Player) fromPlayer1.readObject();
-            player2 = (Player) fromPlayer2.readObject();
+            player1.setNickname((String) fromPlayer1.readObject());
+            player2.setNickname((String) fromPlayer2.readObject());
         }
         catch (ClassNotFoundException | IOException | NullPointerException e) {
-            System.err.println(new Date() + " - " + logPrefix + "Failed to " + 
-                               "retrieve Player objects from the clients");
+            System.err.println(session + "Failed to retrieve Player nicknames");
         }
     }
     
     /**
-     * Updates the client-side player information with the server-side player
-     * information.
+     * Send player colors to the corresponding clients.
      */
-    private void updatePlayerObjects() {
+    private void sendColors() {
         try {
-            toPlayer1.writeObject(player1);
-            toPlayer2.writeObject(player2);
+            toPlayer1.writeObject(player1.getColor());
+            toPlayer2.writeObject(player2.getColor());
         }
         catch (IOException | NullPointerException e) {
-            System.err.println(new Date() + " - " + logPrefix + "Failed to send " + 
-                               "Player objects to the clients");
+            System.err.println(session + "Failed to send Player colors");
         }
     }
     
     /**
-     * Sends to clients information about their opponent.
+     * Send nicknames of opponents to the corresponding clients.
      */
-    private void sendOpponentObjects() {
+    private void sendOpponentNames() {
         try {
-            toPlayer1.writeObject(player2);
-            toPlayer2.writeObject(player1);
+            toPlayer1.writeObject(player2.getNickname());
+            toPlayer2.writeObject(player1.getNickname());
         }
         catch (IOException | NullPointerException e) {
-            System.err.println(new Date() + " - " + logPrefix + "Failed to send " + 
-                               "Player objects to the opponent clients");
+            System.err.println(session + "Failed to send Player nicknames");
         }
     }
     
     /**
-     * Randomly determines the color of each player. The players' colors are 
-     * transmitted to their respective clients.
+     * Randomly determine the color of each player.
      */
-    private void determinePlayerColors() {
+    private void getPlayerColors() {
         if (Math.random() < 0.5) {
             player1.setColor(PieceColor.RED);
             player2.setColor(PieceColor.BLUE);
