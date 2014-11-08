@@ -10,7 +10,7 @@ import edu.asu.stratego.gui.ClientStage;
 public class Client extends Application {
     
     // Connection socket to the server.
-    public static Socket socket;
+    private static Socket socket;
     
     /**
      * The Main entry point for the Client application.
@@ -18,7 +18,7 @@ public class Client extends Application {
     @Override
     public void start(Stage primaryStage) {
         // Connect to the server.
-        ClientStage client = new ClientStage();
+        ClientStage client = new ClientStage(socket);
         client.setConnectionScene();
     }
     

@@ -13,20 +13,20 @@ import java.net.Socket;
  */
 public class Server {
     
-    private static ServerSocket serverSocket = null;
+    private static ServerSocket listener = null;
     private static int sessionNumber = 1;
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         try {
-            serverSocket = new ServerSocket(4212);
+            listener = new ServerSocket(4212);
             System.out.println("Server started @ " + InetAddress.getLocalHost().getHostAddress());
             System.out.println("Waiting for incoming connections...\n");
             
             while (true) {
-                Socket playerOne = serverSocket.accept();
+                Socket playerOne = listener.accept();
                 System.out.println("Session " + sessionNumber + ": Player 1 has joined the session");
                 
-                Socket playerTwo = serverSocket.accept();
+                Socket playerTwo = listener.accept();
                 System.out.println("Session " + sessionNumber + ": Player 2 has joined the session");
                 
                 // TODO Implement the ServerGameManager.
@@ -35,9 +35,7 @@ public class Server {
                 // session.start();
             }
         }
-        catch (IOException e) {
-            // TODO Handle this error somehow...
-            e.printStackTrace();
-        }
+        
+        finally { listener.close(); }
     }
 }

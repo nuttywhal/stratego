@@ -9,8 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
-import edu.asu.stratego.Client;
-
 /**
  * Wrapper class for a JavaFX scene. Contains a scene UI and its associated 
  * event handlers for retrieving network connection information from the player 
@@ -28,16 +26,17 @@ class ConnectionScene {
     private TextField serverIPField = new TextField();
     private Label     statusLabel   = new Label();
     
-    private String nickname;
-    private String serverIP;
+    static String nickname;
+    static String serverIP;
     
     Socket socket;
     Scene scene;
     
     /**
      * Creates a new instance of ConnectionScene.
+     * @param socket connection socket used to connect the client to the server
      */
-    ConnectionScene() {
+    ConnectionScene(Socket socket) {
         // Initiate task to connect to Stratego server.
         Thread serverConnect = new Thread(new ConnectToServer());
         serverConnect.setDaemon(true);
@@ -67,7 +66,7 @@ class ConnectionScene {
         submitFields.setOnAction(e -> Platform.runLater(new ProcessFields()));
         
         // Connection Socket.
-        socket = Client.socket;
+        this.socket = socket;
         
         scene = new Scene(borderPane, WINDOW_WIDTH, WINDOW_HEIGHT);
     }
@@ -149,7 +148,7 @@ class ConnectionScene {
                     }
                     catch (IOException | InterruptedException e) {
                         Platform.runLater(() -> {
-                            statusLabel.setText("Cannot connect to the server..."); 
+                            statusLabel.setText("Cannot connect to the Server");
                         });
                     }
                     finally {
