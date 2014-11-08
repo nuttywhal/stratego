@@ -5,6 +5,7 @@ import java.net.Socket;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import edu.asu.stratego.game.ClientGameManager;
 import edu.asu.stratego.gui.ClientStage;
 
 public class Client extends Application {
@@ -17,9 +18,14 @@ public class Client extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        // Connect to the server.
+        // Display client GUI.
         ClientStage client = new ClientStage(socket);
         client.setConnectionScene();
+        
+        // Control the game on a separate thread.
+        ClientGameManager manager = new ClientGameManager(client);
+        manager.setDaemon(true);
+        manager.start();
     }
     
     /**

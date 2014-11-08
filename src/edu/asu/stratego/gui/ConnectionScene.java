@@ -14,22 +14,22 @@ import javafx.scene.layout.*;
  * event handlers for retrieving network connection information from the player 
  * and connecting to the network.
  */
-class ConnectionScene {
+public class ConnectionScene {
     
-    private Object playerLogin = new Object();
+    private static final Object playerLogin = new Object();
     
     private final int WINDOW_WIDTH  = 300;
     private final int WINDOW_HEIGHT = 150;
     
-    private Button    submitFields  = new Button("Enter Battlefield");
-    private TextField nicknameField = new TextField();
-    private TextField serverIPField = new TextField();
-    private Label     statusLabel   = new Label();
+    private static Label statusLabel   = new Label();
+    private Button       submitFields  = new Button("Enter Battlefield");
+    private TextField    nicknameField = new TextField();
+    private TextField    serverIPField = new TextField();
     
     static String nickname;
     static String serverIP;
+    static Socket socket;
     
-    Socket socket;
     Scene scene;
     
     /**
@@ -37,11 +37,6 @@ class ConnectionScene {
      * @param socket connection socket used to connect the client to the server
      */
     ConnectionScene(Socket socket) {
-        // Initiate task to connect to Stratego server.
-        Thread serverConnect = new Thread(new ConnectToServer());
-        serverConnect.setDaemon(true);
-        serverConnect.start();
-        
         // Create UI.
         GridPane gridPane = new GridPane();
         gridPane.add(new Label("Nickname: "), 0, 0);
@@ -66,7 +61,7 @@ class ConnectionScene {
         submitFields.setOnAction(e -> Platform.runLater(new ProcessFields()));
         
         // Connection Socket.
-        this.socket = socket;
+        ConnectionScene.socket = socket;
         
         scene = new Scene(borderPane, WINDOW_WIDTH, WINDOW_HEIGHT);
     }
@@ -134,7 +129,7 @@ class ConnectionScene {
      * 
      * @see edu.asu.stratego.gui.ConnectionScene.ProcessFields
      */
-    private class ConnectToServer implements Runnable {
+    public static class ConnectToServer implements Runnable {
         @Override
         public void run() {
             while (socket == null) {
