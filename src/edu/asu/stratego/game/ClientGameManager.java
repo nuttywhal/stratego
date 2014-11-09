@@ -44,6 +44,8 @@ public class ClientGameManager implements Runnable {
         System.out.println(player.getNickname() + " " + player.getColor());
         System.out.println(opponent.getNickname() + " " + opponent.getColor());
         
+        Platform.runLater(() -> { stage.setSetupBoardScene(); });
+        
         // TODO Implement the rest of ClientGameManager here.
     }
     
@@ -54,9 +56,6 @@ public class ClientGameManager implements Runnable {
      * @see edu.asu.stratego.gui.ConnectionScene.ConnectToServer
      */
     private void connectToServer() {
-        // Set the ClientStage scene.
-        Platform.runLater(() -> { stage.setConnectionScene(); });
-        
         try {
             ConnectionScene.ConnectToServer connectToServer = 
                     new ConnectionScene.ConnectToServer();

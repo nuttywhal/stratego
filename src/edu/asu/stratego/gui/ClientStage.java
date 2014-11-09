@@ -2,8 +2,6 @@ package edu.asu.stratego.gui;
 
 import java.net.Socket;
 
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
@@ -15,13 +13,14 @@ public class ClientStage extends Stage {
     
     private ConnectionScene connection;
     private WaitingScene    waiting;
+    private BoardScene      board;
     
     /**
      * Creates a new instance of ClientStage.
      * @param socket connection socket used to connect the client to the server
      */
     public ClientStage(Socket socket) {
-        this.setScene(new Scene(new Pane(), 300, 150));
+        setConnectionScene();
         this.setTitle("ASU Stratego");
         this.setResizable(false);
         this.show();
@@ -43,6 +42,15 @@ public class ClientStage extends Stage {
     public void setWaitingScene() {
         waiting = new WaitingScene();
         this.setScene(waiting.scene);
+    }
+    
+    /**
+     * Switch to the Board Scene.
+     * @see edu.asu.stratego.gui.BoardScene
+     */
+    public void setSetupBoardScene() {
+        board = new BoardScene();
+        this.setScene(board.scene);
     }
 
     /**

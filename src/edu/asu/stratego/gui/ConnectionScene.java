@@ -3,12 +3,18 @@ package edu.asu.stratego.gui;
 import java.io.IOException;
 import java.net.Socket;
 
-import edu.asu.stratego.Client;
 import javafx.application.Platform;
-import javafx.geometry.*;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+
+import edu.asu.stratego.Client;
 
 /**
  * Wrapper class for a JavaFX scene. Contains a scene UI and its associated 
@@ -19,9 +25,6 @@ public class ConnectionScene {
     
     private static final Object playerLogin = new Object();
     
-    private final int WINDOW_WIDTH  = 300;
-    private final int WINDOW_HEIGHT = 150;
-    
     private Button    submitFields  = new Button("Enter Battlefield");
     private TextField nicknameField = new TextField();
     private TextField serverIPField = new TextField();
@@ -29,6 +32,9 @@ public class ConnectionScene {
     
     private static String nickname;
     private static String serverIP;
+    
+    private final int WIDTH  = 300;
+    private final int HEIGHT = 150;
     
     Scene scene;
     
@@ -59,7 +65,7 @@ public class ConnectionScene {
         // Event Handler.
         submitFields.setOnAction(e -> Platform.runLater(new ProcessFields()));
         
-        scene = new Scene(borderPane, WINDOW_WIDTH, WINDOW_HEIGHT);
+        scene = new Scene(borderPane, WIDTH, HEIGHT);
     }
     
     /**
