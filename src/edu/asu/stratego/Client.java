@@ -10,7 +10,7 @@ import edu.asu.stratego.gui.ClientStage;
 
 public class Client extends Application {
     
-    private Socket socket;
+    private static Socket socket;
     
     /**
      * The Main entry point for the Client application.
@@ -21,9 +21,25 @@ public class Client extends Application {
         ClientStage client = new ClientStage(socket);
         
         // Control the game on a separate thread.
-        ClientGameManager manager = new ClientGameManager(client);
+        Thread manager = new Thread(new ClientGameManager(client));
         manager.setDaemon(true);
         manager.start();
+    }
+
+    /**
+     * Returns the client socket used to connect to a server.
+     * @return client socket
+     */
+    public static Socket getSocket() {
+        return socket;
+    }
+    
+    /**
+     * Sets the value of value of the socket.
+     * @param socket
+     */
+    public static void setSocket(Socket socket) {
+        Client.socket = socket;
     }
     
     /**

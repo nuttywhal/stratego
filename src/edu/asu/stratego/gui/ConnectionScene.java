@@ -3,6 +3,7 @@ package edu.asu.stratego.gui;
 import java.io.IOException;
 import java.net.Socket;
 
+import edu.asu.stratego.Client;
 import javafx.application.Platform;
 import javafx.geometry.*;
 import javafx.scene.Scene;
@@ -26,8 +27,8 @@ public class ConnectionScene {
     private TextField serverIPField = new TextField();
     static  Label     statusLabel   = new Label();
     
-    static String nickname;
-    static String serverIP;
+    private static String nickname;
+    private static String serverIP;
     
     Scene scene;
     
@@ -95,7 +96,7 @@ public class ConnectionScene {
                     playerLogin.wait();    // Wait for connection attempt.
                 }
                 catch (InterruptedException e) {
-                    // TODO Handle this error somehow...
+                    // TODO Handle this exception somehow...
                     e.printStackTrace();
                 }
             }
@@ -127,14 +128,16 @@ public class ConnectionScene {
     public static class ConnectToServer implements Runnable {
         @Override
         public void run() {
-            while (ClientStage.socket == null) {
+            Socket clientSocket = Client.getSocket();
+            
+            while (clientSocket == null) {
                 synchronized (playerLogin) {
                     try {
                         // Wait for submitFields button event.
                         playerLogin.wait();
                         
                         // Attempt connection to server.
-                        ClientStage.socket = new Socket(serverIP, 4212);
+                        clientSocket = new Socket(serverIP, 4212);
                     }
                     catch (IOException | InterruptedException e) {
                         Platform.runLater(() -> {
@@ -147,6 +150,16 @@ public class ConnectionScene {
                     }
                 }
             }
+
+            Client.setSocket(clientSocket);
         }
+    }
+    
+    /**
+     * Returns the nickname entered by the player.
+     * @return (possibly empty) String containing the player's nickname
+     */
+    public String getNickname() {
+        return nickname;
     }
 }

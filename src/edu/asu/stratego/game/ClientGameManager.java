@@ -1,15 +1,24 @@
 package edu.asu.stratego.game;
 
-import javafx.application.Platform;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
+import javafx.application.Platform;
+import edu.asu.stratego.Client;
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.gui.ConnectionScene;
 
 /**
- * Thread to handle the Stratego game on the client-side once the client 
- * has successfully connected to a Stratego server.
+ * Task to handle the Stratego game on the client-side.
  */
-public class ClientGameManager extends Thread {
+public class ClientGameManager implements Runnable {
+    
+    private ObjectOutputStream toServer;
+    private ObjectInputStream  fromServer;
+    
+    private Player player   = new Player();
+    private Player opponent = new Player();
     
     private ClientStage stage;
     
@@ -23,9 +32,7 @@ public class ClientGameManager extends Thread {
 
     /**
      * See ServerGameManager's run() method to understand how the client 
-     * interacts with the server. The sequence of I/O comment markers in 
-     * ClientGameManger should correspond to the sequence of I/O comment 
-     * markers in ServerGameManager.
+     * interacts with the server.
      * 
      * @see edu.asu.stratego.game.ServerGameManager
      */
@@ -34,11 +41,14 @@ public class ClientGameManager extends Thread {
         connectToServer();
         waitForOpponent();
         
+        System.out.println(player.getNickname() + " " + player.getColor());
+        System.out.println(opponent.getNickname() + " " + opponent.getColor());
+        
         // TODO Implement the rest of ClientGameManager here.
     }
     
     /**
-     * Executes the ConnectToServer thread. Pauses this current thread until 
+     * Executes the ConnectToServer thread. Blocks the current thread until 
      * the ConnectToServer thread terminates.
      * 
      * @see edu.asu.stratego.gui.ConnectionScene.ConnectToServer
@@ -56,13 +66,43 @@ public class ClientGameManager extends Thread {
             serverConnect.join();
         }
         catch(InterruptedException e) {
-            // TODO Handle this error somehow...
+            // TODO Handle this exception somehow...
             e.printStackTrace();
         }
     }
     
+    /**
+     * Establish I/O streams between the client and the server. Send player 
+     * information to the server. Then, wait until an object containing player 
+     * information about the opponent is received from the server.
+     * 
+     * <p>
+     * After the player information has been sent and opponent information has 
+     * been received, the method terminates indicating that it is time to set up
+     * the game.
+     * </p>
+     */
     private void waitForOpponent() {
         // Set the ClientStage scene.
         Platform.runLater(() -> { stage.setWaitingScene(); });
+        
+        try {
+            toServer = new ObjectOutputStream(Client.getSocket().getOutputStream());
+            fromServer = new ObjectInputStream(Client.getSocket().getInputStream());
+     
+            player.setNickname(stage.getConnection().getNickname());
+            toServer.writeObject(player);
+            opponent = (Player) fromServer.readObject();
+            
+            // Infer player color from opponent color.
+            if (opponent.getColor() == PieceColor.RED)
+                player.setColor(PieceColor.BLUE);
+            else
+                player.setColor(PieceColor.RED);
+        }
+        catch (IOException | ClassNotFoundException e) {
+            // TODO Handle this exception somehow...
+            e.printStackTrace();
+        }
     }
 }
