@@ -8,7 +8,17 @@ public class ImageConstants {
     public final static Image border     = new Image(ImageConstants.class.getResource("images/board/border.png").toString());
     public final static Image darkGrass  = new Image(ImageConstants.class.getResource("images/board/grass1.png").toString());
     public final static Image lightGrass = new Image(ImageConstants.class.getResource("images/board/grass2.png").toString());
+
+    public final static Image lake1_1 = new Image(ImageConstants.class.getResource("images/board/lake1_1.png").toString());
+    public final static Image lake1_2 = new Image(ImageConstants.class.getResource("images/board/lake1_2.png").toString());
+    public final static Image lake1_3 = new Image(ImageConstants.class.getResource("images/board/lake1_3.png").toString());
+    public final static Image lake1_4 = new Image(ImageConstants.class.getResource("images/board/lake1_4.png").toString());
     
+    public final static Image lake2_1 = new Image(ImageConstants.class.getResource("images/board/lake2_1.png").toString());
+    public final static Image lake2_2 = new Image(ImageConstants.class.getResource("images/board/lake2_2.png").toString());
+    public final static Image lake2_3 = new Image(ImageConstants.class.getResource("images/board/lake2_3.png").toString());
+    public final static Image lake2_4 = new Image(ImageConstants.class.getResource("images/board/lake2_4.png").toString());
+
     // Piece Images.
     public final static Image red_02   = new Image(ImageConstants.class.getResource("images/pieces/red/red_02.png").toString());
     public final static Image red_03   = new Image(ImageConstants.class.getResource("images/pieces/red/red_03.png").toString());
