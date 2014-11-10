@@ -1,7 +1,6 @@
 package edu.asu.stratego.gui;
 
 import java.io.IOException;
-import java.net.Socket;
 
 import javafx.application.Platform;
 import javafx.geometry.HPos;
@@ -13,8 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-
-import edu.asu.stratego.Client;
+import edu.asu.stratego.game.ClientSocket;
 
 /**
  * Wrapper class for a JavaFX scene. Contains a scene UI and its associated 
@@ -134,16 +132,15 @@ public class ConnectionScene {
     public static class ConnectToServer implements Runnable {
         @Override
         public void run() {
-            Socket clientSocket = Client.getSocket();
             
-            while (clientSocket == null) {
+            while (ClientSocket.getInstance() == null) {
                 synchronized (playerLogin) {
                     try {
                         // Wait for submitFields button event.
                         playerLogin.wait();
                         
                         // Attempt connection to server.
-                        clientSocket = new Socket(serverIP, 4212);
+                        ClientSocket.connect(serverIP, 4212);
                     }
                     catch (IOException | InterruptedException e) {
                         Platform.runLater(() -> {
@@ -156,8 +153,6 @@ public class ConnectionScene {
                     }
                 }
             }
-
-            Client.setSocket(clientSocket);
         }
     }
     

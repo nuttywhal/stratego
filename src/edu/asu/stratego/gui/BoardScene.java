@@ -27,11 +27,11 @@ public class BoardScene {
     Scene scene;
     
     /**
-     * Creates a new instance of ConnectionScene.
+     * Creates a new instance of BoardScene.
      */
     public BoardScene() {
         
-        /* ============== Board Design ==============
+        /* ================ Board Design ================
          * 
          * The scene is divided into a 12 x 12 grid.
          * Each unit represents a 1 x 1 area.
@@ -108,4 +108,6 @@ public class BoardScene {
         
         scene = new Scene(root, WIDTH, HEIGHT);
     }
+    
+    
 }

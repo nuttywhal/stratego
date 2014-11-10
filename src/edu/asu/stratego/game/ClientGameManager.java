@@ -5,7 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javafx.application.Platform;
-import edu.asu.stratego.Client;
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.gui.ConnectionScene;
 
@@ -44,7 +43,7 @@ public class ClientGameManager implements Runnable {
         System.out.println(player.getNickname() + " " + player.getColor());
         System.out.println(opponent.getNickname() + " " + opponent.getColor());
         
-        Platform.runLater(() -> { stage.setSetupBoardScene(); });
+        Platform.runLater(() -> { stage.setBoardScene(); });
         
         // TODO Implement the rest of ClientGameManager here.
     }
@@ -86,8 +85,8 @@ public class ClientGameManager implements Runnable {
         Platform.runLater(() -> { stage.setWaitingScene(); });
         
         try {
-            toServer = new ObjectOutputStream(Client.getSocket().getOutputStream());
-            fromServer = new ObjectInputStream(Client.getSocket().getInputStream());
+            toServer = new ObjectOutputStream(ClientSocket.getInstance().getOutputStream());
+            fromServer = new ObjectInputStream(ClientSocket.getInstance().getInputStream());
      
             player.setNickname(stage.getConnection().getNickname());
             toServer.writeObject(player);
