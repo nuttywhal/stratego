@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 import edu.asu.stratego.game.PieceColor;
 
+/**
+ * Contains information about a player.
+ */
 public class Player implements Serializable {
     
     private static final long serialVersionUID = 649459794036226272L;

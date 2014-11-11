@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import edu.asu.stratego.game.ClientSocket;
+import edu.asu.stratego.game.Game;
 
 /**
  * Wrapper class for a JavaFX scene. Contains a scene UI and its associated 
@@ -28,7 +29,6 @@ public class ConnectionScene {
     private TextField serverIPField = new TextField();
     static  Label     statusLabel   = new Label();
     
-    private static String nickname;
     private static String serverIP;
     
     private final int WIDTH  = 300;
@@ -87,7 +87,7 @@ public class ConnectionScene {
                statusLabel.setText("Connecting to the server..."); 
             });
 
-            nickname = nicknameField.getText();
+            Game.getPlayer().setNickname(nicknameField.getText());
             serverIP = serverIPField.getText();
             
             nicknameField.setEditable(false);
@@ -154,13 +154,5 @@ public class ConnectionScene {
                 }
             }
         }
-    }
-    
-    /**
-     * Returns the nickname entered by the player.
-     * @return (possibly empty) String containing the player's nickname
-     */
-    public String getNickname() {
-        return nickname;
     }
 }

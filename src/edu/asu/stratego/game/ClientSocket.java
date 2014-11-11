@@ -5,11 +5,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
- * Client socket that connects to the server. Utilizes the Java singleton 
- * design pattern for providing access to an instance:
- * 
- * "Ensure a class has only one instance, and provide a global point of access 
- * to it."
+ * Client socket that connects to the server. The client should only use one 
+ * socket to connect to the server.
  */
 public final class ClientSocket {
     
@@ -18,9 +15,7 @@ public final class ClientSocket {
     /**
      * Prevents an instance of this class from being instantiated.
      */
-    private ClientSocket() {
-        /* Intentionally Empty */
-    }
+    private ClientSocket() { /* Intentionally Empty */ }
     
     /**
      * Attempts a connection to the server.

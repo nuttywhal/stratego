@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * Colors to distinguish the players (armies) from one another. The colors 
- * also indicate the player that goes first and the player that goes second.
+ * also indicate which player's turn it is.
  */
 public enum PieceColor implements Serializable {
     RED,
