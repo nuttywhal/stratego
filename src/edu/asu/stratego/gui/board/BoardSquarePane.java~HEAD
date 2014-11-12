@@ -1,5 +1,6 @@
 package edu.asu.stratego.gui.board;
 
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import edu.asu.stratego.gui.board.BoardSquareType;
@@ -32,5 +33,13 @@ public class BoardSquarePane extends StackPane {
      */
     public ImageView getPiece() {
         return piece;
+    }
+    
+    /**
+     * Sets the ImageView representing the piece.
+     * @param ImageView of the piece at this Square.
+     */
+    public void setPiece(Image p) {
+        piece.setImage(p);
     }
 }

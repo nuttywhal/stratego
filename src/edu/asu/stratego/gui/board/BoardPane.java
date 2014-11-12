@@ -1,4 +1,4 @@
-package edu.asu.stratego.gui.board;
+spackage edu.asu.stratego.gui.board;
 
 import edu.asu.stratego.game.board.Board;
 import edu.asu.stratego.media.ImageConstants;
