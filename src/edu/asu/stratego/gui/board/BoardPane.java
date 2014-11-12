@@ -23,14 +23,14 @@ public class BoardPane extends GridPane {
         }
         
         // Add the two lakes.
-        board.getSquare(2, 4).getPane().setPiece(ImageConstants.lake1_1);
-        board.getSquare(3, 4).getPane().setPiece(ImageConstants.lake1_2);
-        board.getSquare(2, 5).getPane().setPiece(ImageConstants.lake1_3);
-        board.getSquare(3, 5).getPane().setPiece(ImageConstants.lake1_4);
+        board.getSquare(2, 4).getPane().setPiece(ImageConstants.LAKE_1_1);
+        board.getSquare(3, 4).getPane().setPiece(ImageConstants.LAKE_1_2);
+        board.getSquare(2, 5).getPane().setPiece(ImageConstants.LAKE_1_3);
+        board.getSquare(3, 5).getPane().setPiece(ImageConstants.LAKE_1_4);
         
-        board.getSquare(6, 4).getPane().setPiece(ImageConstants.lake2_1);
-        board.getSquare(7, 4).getPane().setPiece(ImageConstants.lake2_2);
-        board.getSquare(6, 5).getPane().setPiece(ImageConstants.lake2_3);
-        board.getSquare(7, 5).getPane().setPiece(ImageConstants.lake2_4);
+        board.getSquare(6, 4).getPane().setPiece(ImageConstants.LAKE_2_1);
+        board.getSquare(7, 4).getPane().setPiece(ImageConstants.LAKE_2_2);
+        board.getSquare(6, 5).getPane().setPiece(ImageConstants.LAKE_2_3);
+        board.getSquare(7, 5).getPane().setPiece(ImageConstants.LAKE_2_4);
     }
 }

@@ -1,5 +1,6 @@
 package edu.asu.stratego.game.board;
 
+import edu.asu.stratego.game.Piece;
 import edu.asu.stratego.gui.board.BoardSquarePane;
 import edu.asu.stratego.gui.board.BoardSquareType;
 
@@ -8,6 +9,7 @@ import edu.asu.stratego.gui.board.BoardSquareType;
  */
 public class Square {
 
+    private Piece piece = null;
     private BoardSquarePane pane;
     
     /**
@@ -24,5 +26,21 @@ public class Square {
      */
     public BoardSquarePane getPane() {
         return pane;
+    }
+
+    /**
+     * Returns the piece at this square.
+     * @return the piece at this square.
+     */
+    public Piece getPiece() {
+        return piece;
+    }
+
+    /**
+     * Sets the piece at this square.
+     * @param piece the piece to set
+     */
+    public void setPiece(Piece piece) {
+        this.piece = piece;
     }
 }

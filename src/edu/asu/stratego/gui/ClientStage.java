@@ -1,5 +1,8 @@
 package edu.asu.stratego.gui;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import javafx.stage.Stage;
 
 /**
@@ -12,6 +15,9 @@ public class ClientStage extends Stage {
     private ConnectionScene connection;
     private WaitingScene    waiting;
     private BoardScene      board;
+    
+    private static double UNIT;
+    private static int    SIDE;
     
     /**
      * Creates a new instance of ClientStage.
@@ -56,5 +62,21 @@ public class ClientStage extends Stage {
      */
     public ConnectionScene getConnection() {
         return connection;
+    }
+
+    /**
+     * Returns the length/width divided by 12.
+     * @return the unit
+     */
+    public static double getUnit() {
+        return UNIT;
+    }
+    
+    /**
+     * Returns the length/width of the Board Scene.
+     * @return the side length of the scene
+     */
+    public static int getSide() {
+        return SIDE;
     }
 }

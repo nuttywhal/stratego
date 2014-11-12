@@ -3,15 +3,12 @@ package edu.asu.stratego.game;
 import edu.asu.stratego.media.ImageConstants;
 import javafx.scene.image.Image;
 
-class Piece {
+public class Piece {
     private PieceColor color;
     private PieceType  type;
     
     private boolean isOpponentPiece;
-    private Image image;
-    
-    private int row;
-    private int col;
+    private Image   image;
     
     /**
      * Creates a new instance of Piece.
@@ -30,44 +27,44 @@ class Piece {
     private void setPieceImage() {
         if (this.color == PieceColor.RED) {
             switch (type) {
-                case SCOUT:      this.image = ImageConstants.red_02;   break;
-                case MINER:      this.image = ImageConstants.red_03;   break;
-                case SERGEANT:   this.image = ImageConstants.red_04;   break;
-                case LIEUTENANT: this.image = ImageConstants.red_05;   break;
-                case CAPTAIN:    this.image = ImageConstants.red_06;   break;
-                case MAJOR:      this.image = ImageConstants.red_07;   break;
-                case COLONEL:    this.image = ImageConstants.red_08;   break;
-                case GENERAL:    this.image = ImageConstants.red_09;   break;
-                case MARSHAL:    this.image = ImageConstants.red_10;   break;
-                case BOMB:       this.image = ImageConstants.red_bomb; break;
-                case FLAG:       this.image = ImageConstants.red_flag; break;
-                case SPY:        this.image = ImageConstants.red_spy;  break;
+                case SCOUT:      this.image = ImageConstants.RED_02;   break;
+                case MINER:      this.image = ImageConstants.RED_03;   break;
+                case SERGEANT:   this.image = ImageConstants.RED_04;   break;
+                case LIEUTENANT: this.image = ImageConstants.RED_05;   break;
+                case CAPTAIN:    this.image = ImageConstants.RED_06;   break;
+                case MAJOR:      this.image = ImageConstants.RED_07;   break;
+                case COLONEL:    this.image = ImageConstants.RED_08;   break;
+                case GENERAL:    this.image = ImageConstants.RED_09;   break;
+                case MARSHAL:    this.image = ImageConstants.RED_10;   break;
+                case BOMB:       this.image = ImageConstants.RED_BOMB; break;
+                case FLAG:       this.image = ImageConstants.RED_FLAG; break;
+                case SPY:        this.image = ImageConstants.RED_SPY;  break;
                 default:                                               break;
             }
             
             if (this.isOpponentPiece)
-                this.image = ImageConstants.red_back;
+                this.image = ImageConstants.RED_BACK;
         }
         
         else {
             switch (type) {
-                case SCOUT:      this.image = ImageConstants.blue_02;   break;
-                case MINER:      this.image = ImageConstants.blue_03;   break;
-                case SERGEANT:   this.image = ImageConstants.blue_04;   break;
-                case LIEUTENANT: this.image = ImageConstants.blue_05;   break;
-                case CAPTAIN:    this.image = ImageConstants.blue_06;   break;
-                case MAJOR:      this.image = ImageConstants.blue_07;   break;
-                case COLONEL:    this.image = ImageConstants.blue_08;   break;
-                case GENERAL:    this.image = ImageConstants.blue_09;   break;
-                case MARSHAL:    this.image = ImageConstants.blue_10;   break;
-                case BOMB:       this.image = ImageConstants.blue_bomb; break;
-                case FLAG:       this.image = ImageConstants.blue_flag; break;
-                case SPY:        this.image = ImageConstants.blue_spy;  break;
+                case SCOUT:      this.image = ImageConstants.BLUE_02;   break;
+                case MINER:      this.image = ImageConstants.BLUE_03;   break;
+                case SERGEANT:   this.image = ImageConstants.BLUE_04;   break;
+                case LIEUTENANT: this.image = ImageConstants.BLUE_05;   break;
+                case CAPTAIN:    this.image = ImageConstants.BLUE_06;   break;
+                case MAJOR:      this.image = ImageConstants.BLUE_07;   break;
+                case COLONEL:    this.image = ImageConstants.BLUE_08;   break;
+                case GENERAL:    this.image = ImageConstants.BLUE_09;   break;
+                case MARSHAL:    this.image = ImageConstants.BLUE_10;   break;
+                case BOMB:       this.image = ImageConstants.BLUE_BOMB; break;
+                case FLAG:       this.image = ImageConstants.BLUE_FLAG; break;
+                case SPY:        this.image = ImageConstants.BLUE_SPY;  break;
                 default:                                                break;
             }
             
             if (this.isOpponentPiece)
-                this.image = ImageConstants.blue_back;
+                this.image = ImageConstants.BLUE_BACK;
         }
     }
 }

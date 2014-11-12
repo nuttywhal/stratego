@@ -3,6 +3,7 @@ package edu.asu.stratego.gui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
@@ -10,6 +11,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import edu.asu.stratego.game.Game;
+import edu.asu.stratego.gui.board.SetupPanel;
 import edu.asu.stratego.media.ImageConstants;
 
 /**
@@ -18,8 +20,8 @@ import edu.asu.stratego.media.ImageConstants;
  */
 public class BoardScene {
     
-    private final double UNIT;
-    private final int SIDE;
+    private final double UNIT = ClientStage.getUnit();
+    private final int    SIDE = ClientStage.getSide();
     
     Scene scene;
     
@@ -58,14 +60,9 @@ public class BoardScene {
          * to indicate which player's turn it is.
          */
         
-        // Calculate the Scene dimensions from screen resolution.
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        SIDE = (int) (0.85 * screenSize.getHeight()) / 12 * 12;
-        UNIT = SIDE / 12;
-        
         // Set the background color (turn indicator).
         Rectangle background = new Rectangle(0, 0, SIDE, SIDE);
-        background.setFill(new Color(1.0, 1.0, 1.0, 1.0));
+        background.setFill(new Color(0.48, 0.13, 0.13, 1.0));
         
         // Resize the board.
         final int size = 10;
@@ -76,12 +73,18 @@ public class BoardScene {
             }
         }
         
+        // Set the setup panel.
+        SetupPanel panel = new SetupPanel();
+        StackPane.setMargin(panel, new Insets(UNIT, 0, 0, UNIT));
+        
         // Create the border.
-        ImageView border = new ImageView(ImageConstants.border);
+        ImageView border = new ImageView(ImageConstants.BORDER);
+        StackPane.setAlignment(border, Pos.CENTER);
         border.setFitHeight(SIDE);
         border.setFitWidth(SIDE);
         
-        StackPane root = new StackPane(background, Game.getBoard().getPane(), border);
+        StackPane root = new StackPane(background, Game.getBoard().getPane(), panel, border);
+        root.setMaxSize(SIDE, SIDE);
         Game.getBoard().getPane().setAlignment(Pos.CENTER);
         
         scene = new Scene(root, SIDE, SIDE);

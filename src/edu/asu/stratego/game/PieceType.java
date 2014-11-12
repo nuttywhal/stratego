@@ -4,27 +4,37 @@ package edu.asu.stratego.game;
  * Represents the different Stratego pieces.
  */
 public enum PieceType {
-    MARSHAL(10),
-    GENERAL(9),
-    COLONEL(8),
-    MAJOR(7),
-    CAPTAIN(6),
-    LIEUTENANT(5),
-    SERGEANT(4),
-    MINER(3),
-    SCOUT(2),
-    SPY(-1),
-    BOMB(-1),
-    FLAG(-1);
+    MARSHAL(10, 1),
+    GENERAL(9, 1),
+    COLONEL(8, 2),
+    MAJOR(7, 3),
+    CAPTAIN(6, 4),
+    LIEUTENANT(5, 4),
+    SERGEANT(4, 4),
+    MINER(3, 5),
+    SCOUT(2, 8),
+    SPY(-1, 1),
+    BOMB(-1, 6),
+    FLAG(-1, 1);
     
     private int value;
+    private int count;
     
     /**
      * Creates a new instance of PieceType.
      * @param value the piece value
      */
-    PieceType(int value) {
+    PieceType(int value, int count) {
         this.value = value;
+        this.count = count;
+    }
+    
+    /**
+     * Returns the initial count of the piece type.
+     * @return initial count of piece type
+     */
+    public int getCount() {
+        return count;
     }
     
     /**
