@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+
 import edu.asu.stratego.game.ClientSocket;
 import edu.asu.stratego.game.Game;
 

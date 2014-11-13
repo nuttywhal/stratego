@@ -106,5 +106,7 @@ public class ClientGameManager implements Runnable {
      */
     private void setupBoard() {
         Platform.runLater(() -> { stage.setBoardScene(); });
+        
+        
     }
 }

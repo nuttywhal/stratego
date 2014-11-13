@@ -2,6 +2,7 @@ package edu.asu.stratego.gui.board;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+
 import edu.asu.stratego.gui.board.BoardSquareType;
 
 /**

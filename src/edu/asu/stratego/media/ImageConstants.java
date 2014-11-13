@@ -52,10 +52,10 @@ public class ImageConstants {
     public final static Image BLUE_BACK = new Image(ImageConstants.class.getResource("images/pieces/blue/blue_back.png").toString());
     public final static Image BLUE_BOMB = new Image(ImageConstants.class.getResource("images/pieces/blue/blue_bomb.png").toString());
     public final static Image BLUE_FLAG = new Image(ImageConstants.class.getResource("images/pieces/blue/blue_flag.png").toString());
-
+    
     // Piece Image Map.
-    public final HashMap<String, Image> PIECE_MAP = new HashMap<String, Image>(24);
-    {
+    public final static HashMap<String, Image> PIECE_MAP = new HashMap<String, Image>(24);
+    static {
         // Red Pieces.
         PIECE_MAP.put("RED_02", RED_02);
         PIECE_MAP.put("RED_03", RED_03);
@@ -67,9 +67,9 @@ public class ImageConstants {
         PIECE_MAP.put("RED_09", RED_09);
         PIECE_MAP.put("RED_10", RED_10);
         PIECE_MAP.put("RED_SPY", RED_SPY);
-        PIECE_MAP.put("RED_BACK", RED_BACK);
         PIECE_MAP.put("RED_BOMB", RED_BOMB);
         PIECE_MAP.put("RED_FLAG", RED_FLAG);
+        PIECE_MAP.put("RED_BACK", RED_BACK);
         
         // Blue Pieces.
         PIECE_MAP.put("BLUE_02", BLUE_02);
@@ -82,8 +82,8 @@ public class ImageConstants {
         PIECE_MAP.put("BLUE_09", BLUE_09);
         PIECE_MAP.put("BLUE_10", BLUE_10);
         PIECE_MAP.put("BLUE_SPY", BLUE_SPY);
-        PIECE_MAP.put("BLUE_BACK", BLUE_BACK);
         PIECE_MAP.put("BLUE_BOMB", BLUE_BOMB);
         PIECE_MAP.put("BLUE_FLAG", BLUE_FLAG);
+        PIECE_MAP.put("BLUE_BACK", BLUE_BACK);
     }
 }
