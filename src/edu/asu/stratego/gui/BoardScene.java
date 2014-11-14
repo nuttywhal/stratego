@@ -73,7 +73,6 @@ public class BoardScene {
             background.setFill(new Color(0.22, 0.24, 0.55, 1.0));
         }
         
-        
         // Resize the board.
         final int size = 10;
         for (int row = 0; row < size; ++row) {
@@ -87,7 +86,8 @@ public class BoardScene {
         
         // Set the setup panel.
         SetupPanel panel = new SetupPanel();
-        StackPane.setMargin(panel, new Insets(UNIT, 0, 0, UNIT));
+        StackPane.setMargin(panel, new Insets(UNIT, 0, 0, 0));
+        StackPane.setAlignment(panel, Pos.TOP_CENTER);
         
         // Create the border.
         ImageView border = new ImageView(ImageConstants.BORDER);
@@ -95,7 +95,8 @@ public class BoardScene {
         border.setFitHeight(SIDE);
         border.setFitWidth(SIDE);
         
-        StackPane root = new StackPane(background, Game.getBoard().getPiecePane(), Game.getBoard().getEventPane(), panel, border);
+        StackPane root = new StackPane(background, Game.getBoard().getPiecePane(), 
+                                       border, Game.getBoard().getEventPane(), panel);
         root.setMaxSize(SIDE, SIDE);
         Game.getBoard().getPiecePane().setAlignment(Pos.CENTER);
         Game.getBoard().getEventPane().setAlignment(Pos.CENTER);

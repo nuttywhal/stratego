@@ -11,7 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-
 import edu.asu.stratego.game.Game;
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.media.ImageConstants;
@@ -20,6 +19,9 @@ public class SetupPanel extends GridPane {
     
     public SetupPanel() {
         final double UNIT = ClientStage.getUnit();
+        
+        this.setMaxHeight(UNIT * 4);
+        this.setMaxWidth(UNIT * 10);
         
         // Panel background.
         String backgroundURL = "edu/asu/stratego/media/images/board/setup_panel.png";

@@ -1,11 +1,12 @@
 package edu.asu.stratego.gui.board;
 
-import edu.asu.stratego.media.ImageConstants;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+
+import edu.asu.stratego.media.ImageConstants;
 
 public class BoardSquareEventPane extends GridPane {
     
@@ -13,8 +14,8 @@ public class BoardSquareEventPane extends GridPane {
     
     public BoardSquareEventPane() {
         hover = new ImageView(ImageConstants.HIGHLIGHT_NONE);
-        hover.addEventHandler(MouseEvent.MOUSE_ENTERED, new OnHover());
-        hover.addEventHandler(MouseEvent.MOUSE_EXITED, new OffHover());
+        hover.addEventHandler(MouseEvent.MOUSE_ENTERED_TARGET, new OnHover());
+        hover.addEventHandler(MouseEvent.MOUSE_EXITED_TARGET, new OffHover());
         
         this.getChildren().add(hover);
     }
@@ -22,7 +23,6 @@ public class BoardSquareEventPane extends GridPane {
     private class OnHover implements EventHandler<MouseEvent> {
         @Override
         public void handle(MouseEvent e) {
-            System.out.println("Inside OnHover");
             ImageView hover = (ImageView) e.getSource();
             hover.setImage(ImageConstants.HIGHLIGHT_VALID);
         };
@@ -31,7 +31,6 @@ public class BoardSquareEventPane extends GridPane {
     private class OffHover implements EventHandler<MouseEvent> {
         @Override
         public void handle(MouseEvent e) {
-            System.out.println("Inside OffHover");
             ImageView hover = (ImageView) e.getSource();
             hover.setImage(ImageConstants.HIGHLIGHT_NONE);
         };
