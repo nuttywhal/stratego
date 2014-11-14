@@ -5,6 +5,7 @@ import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.media.ImageConstants;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -18,7 +19,7 @@ public class SetupPieces {
         final double UNIT = ClientStage.getUnit();
         
         // Set initial piece count.
-        int[] availability = new int[] { 1, 1, 2, 3, 4, 4, 4, 5, 8, 6, 1, 1 };
+        int[] availability = new int[] { 8, 5, 4, 4, 4, 3, 2, 1, 1, 6, 1, 1 };
         for (int i = 0; i < pieceCount.length; ++i) {
             pieceCount[i] = new Label(" x" + availability[i]);
             pieceCount[i].setFont(Font.font("Century Gothic", UNIT * 0.4));
@@ -32,7 +33,7 @@ public class SetupPieces {
         String[] pieceSuffix = new String[] { "02",   "03",   "04",   "05",   "06",   "07", 
                                               "08",   "09",   "10", "BOMB",  "SPY", "FLAG" };
         
-        // Set piece images and event handlers.
+        // Set piece images and register event handlers.
         for (int i = 0; i < 12; ++i) {
             pieceImages[i] = new ImageView(ImageConstants.
                     PIECE_MAP.get(playerColor + "_" + pieceSuffix[i]));
@@ -46,8 +47,8 @@ public class SetupPieces {
     private class SelectPiece implements EventHandler<MouseEvent> {
         @Override
         public void handle(MouseEvent e) {
-            System.out.println("Piece has been clicked.");
-            e.consume();
+            ImageView pieceImage = (ImageView) e.getSource();
+            pieceImage.setEffect(new Glow(1.0));
         }
     }
     

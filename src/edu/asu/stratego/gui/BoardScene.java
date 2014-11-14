@@ -78,8 +78,8 @@ public class BoardScene {
         final int size = 10;
         for (int row = 0; row < size; ++row) {
             for (int col = 0; col < size; ++col) {
-                Game.getBoard().getSquare(row, col).getPane().getPiece().setFitHeight(UNIT);
-                Game.getBoard().getSquare(row, col).getPane().getPiece().setFitWidth(UNIT);
+                Game.getBoard().getSquare(row, col).getPiecePane().getPiece().setFitHeight(UNIT);
+                Game.getBoard().getSquare(row, col).getPiecePane().getPiece().setFitWidth(UNIT);
             }
         }
         

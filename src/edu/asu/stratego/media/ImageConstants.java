@@ -14,6 +14,10 @@ public class ImageConstants {
     public final static Image DARK_GRASS   = new Image(ImageConstants.class.getResource("images/board/grass1.png").toString());
     public final static Image LIGHT_GRASS  = new Image(ImageConstants.class.getResource("images/board/grass2.png").toString());
 
+    public final static Image HIGHLIGHT_NONE    = new Image(ImageConstants.class.getResource("images/board/highlight_none.png").toString());
+    public final static Image HIGHLIGHT_VALID   = new Image(ImageConstants.class.getResource("images/board/highlight_valid.png").toString());
+    public final static Image HIGHLIGHT_INVALID = new Image(ImageConstants.class.getResource("images/board/highlight_invalid.png").toString());
+    
     public final static Image LAKE_1_1 = new Image(ImageConstants.class.getResource("images/board/lake1_1.png").toString());
     public final static Image LAKE_1_2 = new Image(ImageConstants.class.getResource("images/board/lake1_2.png").toString());
     public final static Image LAKE_1_3 = new Image(ImageConstants.class.getResource("images/board/lake1_3.png").toString());

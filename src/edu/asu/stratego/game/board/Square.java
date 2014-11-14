@@ -1,6 +1,8 @@
 package edu.asu.stratego.game.board;
 
 import edu.asu.stratego.game.Piece;
+import edu.asu.stratego.gui.board.BoardEventPane;
+import edu.asu.stratego.gui.board.BoardSquareEventPane;
 import edu.asu.stratego.gui.board.BoardSquarePane;
 import edu.asu.stratego.gui.board.BoardSquareType;
 
@@ -10,22 +12,24 @@ import edu.asu.stratego.gui.board.BoardSquareType;
 public class Square {
 
     private Piece piece = null;
-    private BoardSquarePane pane;
+    private BoardSquarePane piecePane;
+    private BoardSquareEventPane eventPane;
     
     /**
      * Creates a new instance of Square.
      * @param type the square background image
      */
     public Square(BoardSquareType type) {
-        pane = new BoardSquarePane(type);
+        piecePane = new BoardSquarePane(type);
+        eventPane = new BoardSquareEventPane();
     }
     
     /**
      * Returns the Square's BoardSquarePane.
      * @return BoardSquarePane belonging to the Square
      */
-    public BoardSquarePane getPane() {
-        return pane;
+    public BoardSquarePane getPiecePane() {
+        return piecePane;
     }
 
     /**
@@ -42,5 +46,12 @@ public class Square {
      */
     public void setPiece(Piece piece) {
         this.piece = piece;
+    }
+
+    /**
+     * @return the eventPane
+     */
+    public BoardSquareEventPane getEventPane() {
+        return eventPane;
     }
 }
