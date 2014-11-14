@@ -1,5 +1,6 @@
 package edu.asu.stratego.game.board;
 
+import edu.asu.stratego.gui.board.BoardEventPane;
 import edu.asu.stratego.gui.board.BoardPane;
 import edu.asu.stratego.gui.board.BoardSquareType;
 
@@ -8,7 +9,8 @@ import edu.asu.stratego.gui.board.BoardSquareType;
  */
 public class Board {
 
-    private final BoardPane pane;
+    private final BoardPane piecePane;
+    private final BoardEventPane eventPane;
     private final int size = 10;
     private Square[][] squares;
     
@@ -27,7 +29,8 @@ public class Board {
             }
         }
         
-        pane = new BoardPane(this);
+        piecePane = new BoardPane(this);
+        eventPane = new BoardEventPane(this);
     }
     
     /**
@@ -45,7 +48,11 @@ public class Board {
      * Returns the JavaFX node that graphically represents the board.
      * @return JavaFX BoardPane node of the board
      */
-    public BoardPane getPane() {
-        return pane;
+    public BoardPane getPiecePane() {
+        return piecePane;
+    }
+    
+    public BoardEventPane getEventPane() {
+        return eventPane;
     }
 }

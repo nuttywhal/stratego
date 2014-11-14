@@ -1,7 +1,6 @@
 package edu.asu.stratego.game.board;
 
 import edu.asu.stratego.game.Piece;
-import edu.asu.stratego.gui.board.BoardEventPane;
 import edu.asu.stratego.gui.board.BoardSquareEventPane;
 import edu.asu.stratego.gui.board.BoardSquarePane;
 import edu.asu.stratego.gui.board.BoardSquareType;

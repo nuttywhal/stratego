@@ -80,6 +80,8 @@ public class BoardScene {
             for (int col = 0; col < size; ++col) {
                 Game.getBoard().getSquare(row, col).getPiecePane().getPiece().setFitHeight(UNIT);
                 Game.getBoard().getSquare(row, col).getPiecePane().getPiece().setFitWidth(UNIT);
+                Game.getBoard().getSquare(row, col).getEventPane().getHover().setFitHeight(UNIT);
+                Game.getBoard().getSquare(row, col).getEventPane().getHover().setFitWidth(UNIT);
             }
         }
         
@@ -93,9 +95,10 @@ public class BoardScene {
         border.setFitHeight(SIDE);
         border.setFitWidth(SIDE);
         
-        StackPane root = new StackPane(background, Game.getBoard().getPane(), panel, border);
+        StackPane root = new StackPane(background, Game.getBoard().getPiecePane(), Game.getBoard().getEventPane(), panel, border);
         root.setMaxSize(SIDE, SIDE);
-        Game.getBoard().getPane().setAlignment(Pos.CENTER);
+        Game.getBoard().getPiecePane().setAlignment(Pos.CENTER);
+        Game.getBoard().getEventPane().setAlignment(Pos.CENTER);
         
         scene = new Scene(root, SIDE, SIDE);
     }
