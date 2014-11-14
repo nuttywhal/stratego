@@ -82,31 +82,15 @@ public class SetupPanel extends GridPane {
          * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
         
         GridPane piecePane = new GridPane();
-        // TODO Create class to encapsulate pieceImages and pieceCount.
-        ImageView[] pieceImages = new ImageView[12];
-        Label[] pieceCount = new Label[12];
+        
+        SetupPieces pieces = new SetupPieces();
+        ImageView[] pieceImages = pieces.getPieceImages();
+        Label[] pieceCount = pieces.getPieceCount();
         
         GridPane.setMargin(piecePane, new Insets(0.0, 0.0, 0.0, UNIT * 0.15));
         
-        // Get player color.
-        String playerColor = Game.getPlayer().getColor().toString();
-        
-        // Image constants suffixes.
-        String[] tempValues = new String[] { "02",   "03",   "04",   "05",   "06",   "07", 
-                                             "08",   "09",   "10", "BOMB",  "SPY", "FLAG" };
-        
         for (int i = 0; i < 12; ++i) {
-            // Piece images.
-            pieceImages[i] = new ImageView(ImageConstants.
-                    PIECE_MAP.get(playerColor + "_" + tempValues[i]));
             piecePane.add(pieceImages[i], i, 0);
-            pieceImages[i].setFitHeight(UNIT * 0.8);
-            pieceImages[i].setFitWidth(UNIT * 0.8);
-            
-            // Piece count.
-            pieceCount[i] = new Label(" x" + (i % 9 + 1));
-            pieceCount[i].setFont(Font.font("Century Gothic", UNIT * 0.4));
-            pieceCount[i].setTextFill(new Color(1.0, 1.0, 1.0, 1.0));
             piecePane.add(pieceCount[i], i, 1);
         }
         
