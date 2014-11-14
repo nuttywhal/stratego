@@ -15,7 +15,11 @@ public class BoardEventPane extends GridPane {
         // Initiate piece layer.
         for (int row = 0; row < size; ++row) {
             for (int col = 0; col < size; ++col) {
-                add(board.getSquare(row, col).getEventPane(), row, col);
+                BoardSquareEventPane square = board.getSquare(row, col).getEventPane();
+                
+                add(square, col, row);
+                GridPane.setRowIndex(square.getHover(), row);
+                GridPane.setColumnIndex(square.getHover(), col);
             }
         }
     }

@@ -14,6 +14,9 @@ public class Square {
     private BoardSquarePane piecePane;
     private BoardSquareEventPane eventPane;
     
+    private int row;
+    private int col;
+    
     /**
      * Creates a new instance of Square.
      * @param type the square background image
@@ -52,5 +55,33 @@ public class Square {
      */
     public BoardSquareEventPane getEventPane() {
         return eventPane;
+    }
+    
+    /**
+     * @return the row
+     */
+    public int getRow() {
+        return row;
+    }
+
+    /**
+     * @param row the row to set
+     */
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    /**
+     * @return the col
+     */
+    public int getCol() {
+        return col;
+    }
+
+    /**
+     * @param col the col to set
+     */
+    public void setCol(int col) {
+        this.col = col;
     }
 }

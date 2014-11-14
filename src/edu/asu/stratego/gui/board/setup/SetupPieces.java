@@ -8,11 +8,13 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class SetupPieces {
     private ImageView[] pieceImages = new ImageView[12];
+    private boolean[] pieceSelected = new boolean[12];
     private Label[] pieceCount = new Label[12];
     
     public SetupPieces() {
@@ -39,6 +41,7 @@ public class SetupPieces {
                     PIECE_MAP.get(playerColor + "_" + pieceSuffix[i]));
             pieceImages[i].setFitHeight(UNIT * 0.8);
             pieceImages[i].setFitWidth(UNIT * 0.8);
+            GridPane.setColumnIndex(pieceImages[i], i);
             
             pieceImages[i].addEventHandler(MouseEvent.MOUSE_PRESSED, new SelectPiece());
         } 
@@ -48,7 +51,27 @@ public class SetupPieces {
         @Override
         public void handle(MouseEvent e) {
             ImageView pieceImage = (ImageView) e.getSource();
-            pieceImage.setEffect(new Glow(1.0));
+            int pieceNumber = GridPane.getColumnIndex(pieceImage);
+            
+            for (int i = 0; i < 12; ++i) {
+                if (pieceImages[i] != pieceImage) {
+                    pieceImages[i].setEffect(new Glow(0.0));
+                    pieceSelected[pieceNumber] = false;
+                    System.out.println("Unselected piece, unglow " + i);
+                }
+                else {
+                    if (!pieceSelected[pieceNumber]) {
+                        pieceImage.setEffect(new Glow(1.0));
+                        pieceSelected[pieceNumber] = true;
+                        System.out.println("Selected piece, glow " + pieceNumber);
+                    }
+                    else {
+                        pieceImage.setEffect(new Glow(0.0));
+                        pieceSelected[pieceNumber] = false;
+                        System.out.println("Selected piece, unglow " + pieceNumber);
+                    }
+                }
+            }
         }
     }
     

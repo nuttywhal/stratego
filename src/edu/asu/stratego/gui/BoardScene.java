@@ -96,7 +96,7 @@ public class BoardScene {
         border.setFitWidth(SIDE);
         
         StackPane root = new StackPane(background, Game.getBoard().getPiecePane(), 
-                                       border, Game.getBoard().getEventPane(), panel);
+                                       Game.getBoard().getEventPane(), panel, border);
         root.setMaxSize(SIDE, SIDE);
         Game.getBoard().getPiecePane().setAlignment(Pos.CENTER);
         Game.getBoard().getEventPane().setAlignment(Pos.CENTER);
