@@ -67,4 +67,8 @@ public class Piece {
                 this.image = ImageConstants.BLUE_BACK;
         }
     }
+    
+    public PieceType getPieceType() {
+        return type;
+    }
 }

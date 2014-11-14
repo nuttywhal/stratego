@@ -1,8 +1,5 @@
 package edu.asu.stratego.gui.board.setup;
 
-import edu.asu.stratego.game.Game;
-import edu.asu.stratego.gui.ClientStage;
-import edu.asu.stratego.media.ImageConstants;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.effect.Glow;
@@ -11,17 +8,23 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import edu.asu.stratego.game.Game;
+import edu.asu.stratego.game.PieceType;
+import edu.asu.stratego.gui.ClientStage;
+import edu.asu.stratego.media.ImageConstants;
 
 public class SetupPieces {
+    private static boolean[] pieceSelected = new boolean[12];
+    private static int[]     availability  = new int[12];
+    
     private ImageView[] pieceImages = new ImageView[12];
-    private boolean[] pieceSelected = new boolean[12];
     private Label[] pieceCount = new Label[12];
     
     public SetupPieces() {
         final double UNIT = ClientStage.getUnit();
         
         // Set initial piece count.
-        int[] availability = new int[] { 8, 5, 4, 4, 4, 3, 2, 1, 1, 6, 1, 1 };
+        availability = new int[] { 8, 5, 4, 4, 4, 3, 2, 1, 1, 6, 1, 1 };
         for (int i = 0; i < pieceCount.length; ++i) {
             pieceCount[i] = new Label(" x" + availability[i]);
             pieceCount[i].setFont(Font.font("Century Gothic", UNIT * 0.4));
@@ -56,22 +59,51 @@ public class SetupPieces {
             for (int i = 0; i < 12; ++i) {
                 if (pieceImages[i] != pieceImage) {
                     pieceImages[i].setEffect(new Glow(0.0));
-                    pieceSelected[pieceNumber] = false;
-                    System.out.println("Unselected piece, unglow " + i);
+                    pieceSelected[i] = false;
                 }
                 else {
                     if (!pieceSelected[pieceNumber]) {
                         pieceImage.setEffect(new Glow(1.0));
                         pieceSelected[pieceNumber] = true;
-                        System.out.println("Selected piece, glow " + pieceNumber);
                     }
                     else {
                         pieceImage.setEffect(new Glow(0.0));
                         pieceSelected[pieceNumber] = false;
-                        System.out.println("Selected piece, unglow " + pieceNumber);
                     }
                 }
             }
+        }
+    }
+    
+    public static PieceType getSelectedPieceType() {
+        for (int i = 0; i < 12; ++i) {
+            if (pieceSelected[i] == true)
+                return PieceType.values()[i];
+        }
+        
+        return null;
+    }
+    
+    public static int getSelectedPieceCount() {
+        for (int i = 0; i < 12; ++i) {
+            if (pieceSelected[i] == true)
+                return availability[i];
+        }
+        
+        return -1;
+    }
+    
+    public static void incrementSelectedPieceCount() {
+        for (int i = 0; i < 12; ++i) {
+            if (pieceSelected[i] == true)
+                ++availability[i];
+        }
+    }
+    
+    public static void decrementSelectedPieceCount() {
+        for (int i = 0; i < 12; ++i) {
+            if (pieceSelected[i] == true)
+                --availability[i];
         }
     }
     
@@ -79,7 +111,7 @@ public class SetupPieces {
         return pieceImages;
     }
     
-    public Label[] getPieceCount() {
+    public Label[] getPieceCountText() {
         return pieceCount;
     }
     

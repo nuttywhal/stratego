@@ -87,7 +87,7 @@ public class SetupPanel extends GridPane {
         
         SetupPieces pieces = new SetupPieces();
         ImageView[] pieceImages = pieces.getPieceImages();
-        Label[] pieceCount = pieces.getPieceCount();
+        Label[] pieceCount = pieces.getPieceCountText();
         
         GridPane.setMargin(piecePane, new Insets(0.0, 0.0, 0.0, UNIT * 0.15));
         

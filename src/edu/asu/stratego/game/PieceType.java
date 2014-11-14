@@ -4,17 +4,17 @@ package edu.asu.stratego.game;
  * Represents the different Stratego pieces.
  */
 public enum PieceType {
-    MARSHAL(10, 1),
-    GENERAL(9, 1),
-    COLONEL(8, 2),
-    MAJOR(7, 3),
-    CAPTAIN(6, 4),
-    LIEUTENANT(5, 4),
-    SERGEANT(4, 4),
-    MINER(3, 5),
     SCOUT(2, 8),
-    SPY(-1, 1),
+    MINER(3, 5),
+    SERGEANT(4, 4),
+    LIEUTENANT(5, 4),
+    CAPTAIN(6, 4),
+    MAJOR(7, 3),
+    COLONEL(8, 2),
+    GENERAL(9, 1),
+    MARSHAL(10, 1),
     BOMB(-1, 6),
+    SPY(-1, 1),
     FLAG(-1, 1);
     
     private int value;
