@@ -1,11 +1,14 @@
 package edu.asu.stratego.gui.board.setup;
 
 import edu.asu.stratego.game.Game;
-import edu.asu.stratego.game.PieceColor;
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.media.ImageConstants;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -38,11 +41,16 @@ public class SetupPieces {
             pieceImages[i].setFitHeight(UNIT * 0.8);
             pieceImages[i].setFitWidth(UNIT * 0.8);
             
-            //pieceImages[i].setOnMouseClicked();
+            SelectPiece selectPiece = new SelectPiece();
+            pieceImages[i].addEventHandler(MouseEvent.MOUSE_CLICKED, selectPiece);
         }
     }
     
-    
-    
+    private class SelectPiece implements EventHandler<MouseEvent> {
+        @Override
+        public void handle(MouseEvent e) {
+            System.out.println("Piece has been clicked.");
+        }
+    }
     
 }
