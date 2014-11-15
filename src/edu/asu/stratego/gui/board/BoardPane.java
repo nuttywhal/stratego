@@ -1,11 +1,12 @@
 spackage edu.asu.stratego.gui.board;
 
-import edu.asu.stratego.game.board.Board;
-import edu.asu.stratego.media.ImageConstants;
 import javafx.scene.layout.GridPane;
 
+import edu.asu.stratego.game.board.Board;
+import edu.asu.stratego.media.ImageConstants;
+
 /**
- * JavaFX GridPane to graphically represent the Stratego board.
+ * A graphical representation of the Stratego board.
  */
 public class BoardPane extends GridPane {
     
@@ -16,7 +17,7 @@ public class BoardPane extends GridPane {
     public BoardPane(Board board) {
         final int size = 10;
         
-        // Initiate piece layer.
+        // Initiate board pane.
         for (int row = 0; row < size; ++row) {
             for (int col = 0; col < size; ++col) {
                 add(board.getSquare(row, col).getPiecePane(), col, row);

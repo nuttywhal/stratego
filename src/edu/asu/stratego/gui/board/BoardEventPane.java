@@ -1,8 +1,13 @@
 package edu.asu.stratego.gui.board;
 
-import edu.asu.stratego.game.board.Board;
 import javafx.scene.layout.GridPane;
 
+import edu.asu.stratego.game.board.Board;
+
+/**
+ * Layered directly on top of the BoardPane. Allows the player to interact with 
+ * the board.
+ */
 public class BoardEventPane extends GridPane {
     
     /**

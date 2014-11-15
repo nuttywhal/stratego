@@ -29,6 +29,7 @@ public class Board {
             }
         }
         
+        // Initialize board layers.
         piecePane = new BoardPane(this);
         eventPane = new BoardEventPane(this);
     }
@@ -45,13 +46,15 @@ public class Board {
     }
     
     /**
-     * Returns the JavaFX node that graphically represents the board.
-     * @return JavaFX BoardPane node of the board
+     * @return the BoardPane.
      */
     public BoardPane getPiecePane() {
         return piecePane;
     }
     
+    /**
+     * @return the BoardEventPane.
+     */
     public BoardEventPane getEventPane() {
         return eventPane;
     }

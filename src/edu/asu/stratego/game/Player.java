@@ -14,15 +14,13 @@ public class Player implements Serializable {
     private PieceColor color;
     
     /**
-     * Sets the player's nickname.
-     * @param nickname the player's name
+     * @param nickname the player's nickname
      */
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
     
     /**
-     * Returns the player's nickname.
      * @return a String containing the player's name
      */
     public String getNickname() {
@@ -30,16 +28,14 @@ public class Player implements Serializable {
     }
     
     /**
-     * Sets the player's (army) color.
-     * @param color the player's piece (army) color
+     * @param color the player's color
      */
     public void setColor(PieceColor color) {
         this.color = color;
     }
     
     /**
-     * Returns the player's (army) color.
-     * @return a PieceColor representing the player (army) color
+     * @return the player's color
      */
     public PieceColor getColor() {
         return color;

@@ -65,16 +65,14 @@ public class ClientStage extends Stage {
     }
 
     /**
-     * Returns the length/width divided by 12.
-     * @return the unit
+     * @return the board scene side length (in pixels) divided by 12.
      */
     public static double getUnit() {
         return UNIT;
     }
     
     /**
-     * Returns the length/width of the Board Scene.
-     * @return the side length of the scene
+     * @return the side length of the board scene (in pixels)
      */
     public static int getSide() {
         return SIDE;

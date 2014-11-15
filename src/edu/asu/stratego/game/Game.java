@@ -3,8 +3,8 @@ package edu.asu.stratego.game;
 import edu.asu.stratego.game.board.Board;
 
 /**
- * Contains information about the Stratego game shared between the JavaFX GUI 
- * and the ClientGameManager.
+ * Contains information about the Stratego game, which is shared between the 
+ * JavaFX GUI and the ClientGameManager.
  * 
  * @see edu.asu.stratego.gui.ClientStage
  * @see edu.asu.stratego.game.ClientGameManager
@@ -18,7 +18,7 @@ public class Game {
     private static Board board;
     
     /**
-     * Sets up a new game.
+     * Initializes data fields for a new game.
      */
     public Game() {
         player   = new Player();
@@ -31,7 +31,6 @@ public class Game {
     }
 
     /**
-     * Returns the Player object of the player.
      * @return Player object containing information about the player.
      */
     public static Player getPlayer() {
@@ -39,7 +38,6 @@ public class Game {
     }
 
     /**
-     * Sets the Player object of the player.
      * @param player Player object containing information about the player.
      */
     public static void setPlayer(Player player) {
@@ -47,7 +45,6 @@ public class Game {
     }
 
     /**
-     * Returns the Player object of the opponent.
      * @return Player object containing information about the opponent.
      */
     public static Player getOpponent() {
@@ -55,7 +52,6 @@ public class Game {
     }
 
     /**
-     * Sets the Player object of the opponent.
      * @param opponent Player object containing information about the opponent.
      */
     public static void setOpponent(Player opponent) {
@@ -63,15 +59,13 @@ public class Game {
     }
 
     /**
-     * Returns the status of the game.
-     * @return value representing the status of the current game.
+     * @return value the status of the game.
      */
     public static GameStatus getStatus() {
         return status;
     }
 
     /**
-     * Sets the status of the game.
      * @param status the status of the game
      */
     public static void setStatus(GameStatus status) {
@@ -79,32 +73,28 @@ public class Game {
     }
 
     /**
-     * Returns the color of the player's turn.
-     * @return value representing the color of the current player's turn
+     * @return value the color of the current player's turn
      */
     public static PieceColor getTurn() {
         return turn;
     }
 
     /**
-     * Set the color of the player's turn
-     * @param turn PieceColor of the player's turn
+     * @param turn the color of the current player's turn
      */
     public static void setTurn(PieceColor turn) {
         Game.turn = turn;
     }
 
     /**
-     * Returns the game board.
-     * @return game board.
+     * @return the game board.
      */
     public static Board getBoard() {
         return board;
     }
 
     /**
-     * Sets the game board
-     * @param board game board
+     * @param board the game board
      */
     public static void setBoard(Board board) {
         Game.board = board;

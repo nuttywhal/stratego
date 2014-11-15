@@ -10,15 +10,22 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+
 import edu.asu.stratego.gui.ClientStage;
 
+/**
+ * A setup timer. This timer counts down from a start time.
+ */
 public class SetupTimer {
-    private static final int START_TIME = 300;
+    private static final int START_TIME = 300;  // Madness? THIS IS SPARTA!
     private Timeline timeline;
     private Label timerLabel = new Label();
     private IntegerProperty secondsLeft = 
             new SimpleIntegerProperty(START_TIME);
     
+    /**
+     * Creates a new instance of SetupTimer.
+     */
     public SetupTimer() {
         final double UNIT = ClientStage.getUnit();
         
@@ -28,6 +35,9 @@ public class SetupTimer {
         timerLabel.setAlignment(Pos.TOP_LEFT);
     }
     
+    /**
+     * Task to start the timer and count down from the start time.
+     */
     private class StartTimer implements Runnable {
         @Override
         public void run() {
@@ -40,12 +50,19 @@ public class SetupTimer {
         }
     }
     
+    /**
+     * Creates a new thread to start the timer task.
+     */
     public void startTimer() {
         Thread startTimer = new Thread(new StartTimer());
         startTimer.setDaemon(true);
         startTimer.start();
     }
     
+    /**
+     * @return JavaFX label that displays how many seconds are left in the 
+     * timer.
+     */
     public Label getLabel() {
         return timerLabel;
     }

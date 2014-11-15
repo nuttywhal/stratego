@@ -10,116 +10,172 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
 import edu.asu.stratego.game.Game;
 import edu.asu.stratego.game.PieceType;
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.media.ImageConstants;
 import edu.asu.stratego.lang.MutableBoolean;
 
+/**
+ * Pieces in the SetupPanel that the player can select when setting up the game.
+ * @see edu.asu.stratego.gui.board.setup.SetupPanel
+ */
 public class SetupPieces {
-	private static HashMap<PieceType, MutableBoolean> pieceSelected = new HashMap<PieceType, MutableBoolean>(12);
-	private static HashMap<PieceType, Integer> availability = new HashMap<PieceType, Integer>(12);
+	private static HashMap<PieceType, MutableBoolean> pieceSelected = 
+	        new HashMap<PieceType, MutableBoolean>(12);
 	
-	private static HashMap<PieceType, ImageView> pieceImages = new HashMap<PieceType, ImageView>(12);
-	private static HashMap<PieceType, Label> pieceCount = new HashMap<PieceType, Label>(12);
+	private static HashMap<PieceType, Integer> availability = 
+	        new HashMap<PieceType, Integer>(12);
+	
+	private static HashMap<PieceType, ImageView> pieceImages = 
+	        new HashMap<PieceType, ImageView>(12);
+	
+	private static HashMap<PieceType, Label> pieceCount = 
+	        new HashMap<PieceType, Label>(12);
 	
 	private static PieceType selectedPieceType;
 
+	/**
+	 * Creates a new instance of SetupPieces.
+	 */
     public SetupPieces() {
         final double UNIT = ClientStage.getUnit();
         selectedPieceType = null;
         
-        // Get player color.
+        // Get the player color.
         String playerColor = Game.getPlayer().getColor().toString();
         
-        // Image constants suffixes.
+        // ImageConstants suffixes.
         String[] pieceSuffix = new String[] { "02",   "03",   "04",   "05",   "06",   "07", 
                                               "08",   "09",   "10", "BOMB",  "SPY", "FLAG" };
-        // Temp count of each piece
-        int[] tempCount = new int[] { 8, 5, 4, 4, 4, 3, 2, 1, 1, 6, 1, 1 };
         
-        // Set initial piece count.
+        // Number of pieces of each type a player has at the start of the game.
+        int[] pieceTypeCount = new int[] { 8, 5, 4, 4, 4, 3, 2, 1, 1, 6, 1, 1 };
+        
         for (int i = 0; i < 12; ++i) {
-        	PieceType tempEnum = PieceType.values()[i];
+            // Enumeration values of PieceType.
+        	PieceType pieceType = PieceType.values()[i];
         	
-        	// Add piece availability to Map
-        	availability.put(tempEnum, tempCount[i]);
+        	// Map the piece type to the number of pieces a player can have of that type
+        	// at the start of the game.
+        	availability.put(pieceType, pieceTypeCount[i]);
 
-        	// Add label
-            pieceCount.put(tempEnum, new Label(" x" + availability.get(tempEnum)));
-            pieceCount.get(tempEnum).setFont(Font.font("Century Gothic", UNIT * 0.4));
-            pieceCount.get(tempEnum).setTextFill(new Color(1.0, 1.0, 1.0, 1.0));
+        	// Map the piece type to a label that displays the number of pieces that have 
+        	// not yet been set on the board.
+            pieceCount.put(pieceType, new Label(" x" + availability.get(pieceType)));
+            pieceCount.get(pieceType).setFont(Font.font("Century Gothic", UNIT * 0.4));
+            pieceCount.get(pieceType).setTextFill(new Color(1.0, 1.0, 1.0, 1.0));
 
-            // Set piece images and register event handlers.
-            pieceImages.put(tempEnum, new ImageView(ImageConstants.
+            // Map the piece type to its corresponding image.
+            pieceImages.put(pieceType, new ImageView(ImageConstants.
                     PIECE_MAP.get(playerColor + "_" + pieceSuffix[i])));
-            pieceImages.get(tempEnum).setFitHeight(UNIT * 0.8);
-            pieceImages.get(tempEnum).setFitWidth(UNIT * 0.8);
-            GridPane.setColumnIndex(pieceImages.get(tempEnum), i);
+            pieceImages.get(pieceType).setFitHeight(UNIT * 0.8);
+            pieceImages.get(pieceType).setFitWidth(UNIT * 0.8);
+            GridPane.setColumnIndex(pieceImages.get(pieceType), i);
             
-            pieceImages.get(tempEnum).addEventHandler(MouseEvent.MOUSE_PRESSED, new SelectPiece());
+            // Register event handlers.
+            pieceImages.get(pieceType).addEventHandler(MouseEvent.MOUSE_PRESSED, new SelectPiece());
             
-            // Make unselected
-            pieceSelected.put(tempEnum, new MutableBoolean(true));
+            // Map the piece type to a boolean value that denotes whether or not the 
+            // SetupPiece is selected. Initially, none of the pieces are selected.
+            pieceSelected.put(pieceType, new MutableBoolean(false));
         }
    }
     
+    /**
+     * This event is triggered when one of the piece type images are clicked 
+     * on. It updates the HashMap that keeps track of which piece type is 
+     * selected and adds a glow to the selected piece type's image.
+     */
     private class SelectPiece implements EventHandler<MouseEvent> {
         @Override
         public void handle(MouseEvent e) {
             ImageView pieceImage = (ImageView) e.getSource();
             
+            // Iterate through the PieceType enumerated values.
             for (int i = 0; i < 12; ++i) {
-            	PieceType tempEnum = PieceType.values()[i];
+            	PieceType pieceType = PieceType.values()[i];
             	
-                if (pieceImages.get(tempEnum) != pieceImage) {
-                    pieceImages.get(tempEnum).setEffect(new Glow(0.0));
-                    pieceSelected.get(tempEnum).setFalse();
+            	// If the piece type does not match the piece type selected...
+                if (pieceImages.get(pieceType) != pieceImage) {
+                    // Un-select the piece type.
+                    pieceImages.get(pieceType).setEffect(new Glow(0.0));
+                    pieceSelected.get(pieceType).setFalse();
                 }
+                
+                // Otherwise...
                 else {
-                    if (!pieceSelected.get(tempEnum).getValue()) {
-                    	selectedPieceType = tempEnum;
+                    // Select the piece type if not already selected.
+                    if (!pieceSelected.get(pieceType).getValue()) {
+                    	selectedPieceType = pieceType;
                         pieceImage.setEffect(new Glow(1.0));
-                        pieceSelected.get(tempEnum).setTrue();
+                        pieceSelected.get(pieceType).setTrue();
                     }
+                    
+                    // Un-select piece type if already selected.
                     else {
                     	selectedPieceType = null;
                         pieceImage.setEffect(new Glow(0.0));
-                        pieceSelected.get(tempEnum).setFalse();
+                        pieceSelected.get(pieceType).setFalse();
                     }
                 }
             }
         }
     }
     
+    /**
+     * @return the type of the selected piece
+     */
     public static PieceType getSelectedPieceType() {
         return selectedPieceType;
     }
     
-    public static int getSelectedPieceCount(PieceType inEnum) {
-        return availability.get(inEnum);
+    /**
+     * @param type PieceType
+     * @return the number of pieces of the PieceType have not been set on the
+     * board yet
+     */
+    public static int getPieceCount(PieceType type) {
+        return availability.get(type);
     }
     
-    public static void incrementSelectedPieceCount(PieceType inEnum) {
-    	availability.put(inEnum, availability.get(inEnum)+1);
+    /**
+     * Increments the piece type count by 1.
+     * @param type PieceType to increment
+     */
+    public static void incrementPieceCount(PieceType type) {
+    	availability.put(type, availability.get(type) + 1);
     }
     
-    public static void decrementSelectedPieceCount(PieceType inEnum) {
-    	availability.put(inEnum, availability.get(inEnum)-1);
+    /**
+     * Decrements the piece type count by 1.
+     * @param type PieceType to decrement
+     */
+    public static void decrementPieceCount(PieceType type) {
+    	availability.put(type, availability.get(type) - 1);
     }
     
+    /**
+     * @return an array of ImageView objects that display images corresponding 
+     * to the piece type.
+     */
     public ImageView[] getPieceImages() {
-    	ImageView[] tempPieceImages = new ImageView[12];
+    	ImageView[] images = new ImageView[12];
     	
         for (int i = 0; i < 12; ++i) {
-        	PieceType tempEnum = PieceType.values()[i];
-        	tempPieceImages[i] = pieceImages.get(tempEnum);
+        	PieceType pieceType = PieceType.values()[i];
+        	images[i] = pieceImages.get(pieceType);
         }
         
-        return tempPieceImages;
+        return images;
     }
     
-    public Label[] getPieceCountText() {
+    /**
+     * @return an array of JavaFX labels that display the number of pieces of 
+     * each piece type that still need to be placed.
+     */
+    public Label[] getPieceCountLabels() {
     	Label[] tempPieceCount = new Label[12];
     	
         for (int i = 0; i < 12; ++i) {

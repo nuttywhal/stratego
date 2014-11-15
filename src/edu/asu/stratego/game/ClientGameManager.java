@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javafx.application.Platform;
+
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.gui.ConnectionScene;
 
@@ -19,12 +20,9 @@ public class ClientGameManager implements Runnable {
     private ClientStage stage;
     
     /**
-     * Creates a new instance of ClientGameController.
+     * Creates a new instance of ClientGameManager.
      * 
-     * @param client the stage that the client is set in
-     * @param game shared between the GUI and ClientGameManager
-     * 
-     * @see edu.asu.stratego.Game.ClientGameManager
+     * @param stage the stage that the client is set in
      */
     public ClientGameManager(ClientStage stage) {
         this.stage = stage;
@@ -41,7 +39,7 @@ public class ClientGameManager implements Runnable {
         connectToServer();
         waitForOpponent();
         setupBoard();
-        // playGame();
+        //playGame();
     }
     
     /**
@@ -101,8 +99,9 @@ public class ClientGameManager implements Runnable {
     }
     
     /**
-     * The game setup. Players will place their pieces in their starting 
-     * positions.
+     * Switches to the game setup scene. Players will place their pieces to 
+     * their initial starting positions. Once the pieces are placed, their 
+     * positions are sent to the server.
      */
     private void setupBoard() {
         Platform.runLater(() -> { stage.setBoardScene(); });

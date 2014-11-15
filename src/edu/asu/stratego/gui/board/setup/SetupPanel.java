@@ -11,12 +11,21 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+
 import edu.asu.stratego.game.Game;
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.media.ImageConstants;
 
+/**
+ * The panel that is shown during the SETTING_UP phase of a Stratego game.
+ * Players interact with this panel to set up their pieces to their starting 
+ * positions.
+ */
 public class SetupPanel extends GridPane {
     
+    /**
+     * Creates a new instance of SetupPanel.
+     */
     public SetupPanel() {
         final double UNIT = ClientStage.getUnit();
         
@@ -95,7 +104,7 @@ public class SetupPanel extends GridPane {
         
         SetupPieces pieces = new SetupPieces();
         ImageView[] pieceImages = pieces.getPieceImages();
-        Label[] pieceCount = pieces.getPieceCountText();
+        Label[] pieceCount = pieces.getPieceCountLabels();
         
         GridPane.setMargin(piecePane, new Insets(0.0, 0.0, 0.0, UNIT * 0.15));
         

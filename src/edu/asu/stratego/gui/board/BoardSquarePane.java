@@ -11,7 +11,7 @@ import edu.asu.stratego.gui.board.BoardSquareType;
  */
 public class BoardSquarePane extends StackPane {
     
-    private ImageView piece = new ImageView();
+    private ImageView pieceImage = new ImageView();
     
     /**
      * Creates a new instance of BoardSquare.
@@ -24,14 +24,13 @@ public class BoardSquarePane extends StackPane {
         else if (type == BoardSquareType.DARK)
             this.setStyle("-fx-background-image: url(edu/asu/stratego/media/images/board/grass2.png)");
         
-        this.getChildren().add(piece);
+        this.getChildren().add(pieceImage);
     }
     
     /**
-     * Returns the ImageView representing the piece.
      * @return ImageView of the piece at this Square.
      */
     public ImageView getPiece() {
-        return piece;
+        return pieceImage;
     }
 }

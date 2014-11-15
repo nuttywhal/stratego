@@ -22,7 +22,9 @@ public enum PieceType {
     
     /**
      * Creates a new instance of PieceType.
+     * 
      * @param value the piece value
+     * @param count number of pieces of this type a player has initially
      */
     PieceType(int value, int count) {
         this.value = value;
@@ -30,7 +32,6 @@ public enum PieceType {
     }
     
     /**
-     * Returns the initial count of the piece type.
      * @return initial count of piece type
      */
     public int getCount() {

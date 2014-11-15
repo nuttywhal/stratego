@@ -5,11 +5,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import edu.asu.stratego.game.Game;
 import edu.asu.stratego.game.PieceColor;
+import edu.asu.stratego.gui.board.BoardTurnIndicator;
 import edu.asu.stratego.gui.board.setup.SetupPanel;
 import edu.asu.stratego.media.ImageConstants;
 
@@ -29,10 +29,12 @@ public class BoardScene {
      */
     public BoardScene() {
         
+        // TODO !!! Remove after development is complete. !!!
         Game.getPlayer().setNickname("Player 1");
         Game.getOpponent().setNickname("Player 2");
-        Game.getPlayer().setColor(PieceColor.RED);
-        Game.getOpponent().setColor(PieceColor.BLUE);
+        Game.getPlayer().setColor(PieceColor.BLUE);
+        Game.getOpponent().setColor(PieceColor.RED);
+        // TODO !!! Remove after development is complete. !!!
         
         /* ================ Board Design ================
          * 
@@ -65,13 +67,8 @@ public class BoardScene {
          */
         
         // Set the background color (turn indicator).
-        Rectangle background = new Rectangle(0, 0, SIDE, SIDE);
-        if (Game.getPlayer().getColor() == PieceColor.RED) {
-            background.setFill(new Color(0.48, 0.13, 0.13, 1.0));
-        }
-        else {
-            background.setFill(new Color(0.22, 0.24, 0.55, 1.0));
-        }
+        BoardTurnIndicator indicator = new BoardTurnIndicator();
+        Rectangle background = indicator.getTurnIndicator();
         
         // Resize the board.
         final int size = 10;
@@ -84,7 +81,7 @@ public class BoardScene {
             }
         }
         
-        // Set the setup panel.
+        // Create the setup panel.
         SetupPanel panel = new SetupPanel();
         StackPane.setMargin(panel, new Insets(UNIT, 0, 0, 0));
         StackPane.setAlignment(panel, Pos.TOP_CENTER);
@@ -95,6 +92,7 @@ public class BoardScene {
         border.setFitHeight(SIDE);
         border.setFitWidth(SIDE);
         
+        // Show Board GUI.
         StackPane root = new StackPane(background, Game.getBoard().getPiecePane(), 
                                        Game.getBoard().getEventPane(), panel, border);
         root.setMaxSize(SIDE, SIDE);

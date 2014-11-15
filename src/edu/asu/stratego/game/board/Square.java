@@ -27,15 +27,13 @@ public class Square {
     }
     
     /**
-     * Returns the Square's BoardSquarePane.
-     * @return BoardSquarePane belonging to the Square
+     * @return the BoardSquarePane associated with this Square
      */
     public BoardSquarePane getPiecePane() {
         return piecePane;
     }
 
     /**
-     * Returns the piece at this square.
      * @return the piece at this square.
      */
     public Piece getPiece() {
@@ -43,7 +41,6 @@ public class Square {
     }
 
     /**
-     * Sets the piece at this square.
      * @param piece the piece to set
      */
     public void setPiece(Piece piece) {
@@ -51,35 +48,35 @@ public class Square {
     }
 
     /**
-     * @return the eventPane
+     * @return the BoardSquareEventPane associated with this Square
      */
     public BoardSquareEventPane getEventPane() {
         return eventPane;
     }
     
     /**
-     * @return the row
+     * @return the row index of this Square (indexing starts at 0)
      */
     public int getRow() {
         return row;
     }
 
     /**
-     * @param row the row to set
+     * @param row the row index of this Square (indexing starts at 0)
      */
     public void setRow(int row) {
         this.row = row;
     }
 
     /**
-     * @return the col
+     * @return the column index of this Square (indexing starts at 0)
      */
     public int getCol() {
         return col;
     }
 
     /**
-     * @param col the col to set
+     * @param col the column index of this Square (indexing starts at 0)
      */
     public void setCol(int col) {
         this.col = col;

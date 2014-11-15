@@ -5,6 +5,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+/**
+ * Task to manage a Stratego game between two clients.
+ */
 public class ServerGameManager implements Runnable {
 
     private final String session;

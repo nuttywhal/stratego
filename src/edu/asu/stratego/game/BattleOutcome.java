@@ -1,7 +1,8 @@
 package edu.asu.stratego.game;
 
 /**
- * Represents the different outcomes of a battle between two pieces.
+ * Represents the different outcomes of a battle between an attacking piece 
+ * and a defending piece.
  */
 public enum BattleOutcome {
     WIN,

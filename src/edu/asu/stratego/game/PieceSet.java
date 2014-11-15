@@ -2,6 +2,9 @@ package edu.asu.stratego.game;
 
 import java.util.ArrayList;
 
+/**
+ * 
+ */
 public class PieceSet {
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
     
