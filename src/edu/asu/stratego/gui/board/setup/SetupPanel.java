@@ -61,11 +61,19 @@ public class SetupPanel extends GridPane {
         headerText.add(nameDisplay, 0, 0);
         
         // Setup Timer.
-        Label setupTimer = new Label("Setup Time Left: 3:14");
+        Label setupTimer = new Label("Setup Time Left: ");
         setupTimer.setFont(Font.font("Century Gothic", UNIT / 3));
         setupTimer.setTextFill(new Color(0.9, 0.5, 0.0, 1.0));
         setupTimer.setAlignment(Pos.TOP_LEFT);
-        headerText.add(setupTimer, 0, 1);
+        
+        SetupTimer timer = new SetupTimer();
+        timer.startTimer();
+        
+        GridPane timerPane = new GridPane();
+        timerPane.add(setupTimer, 0, 1);
+        timerPane.add(timer.getLabel(), 1, 1);
+        
+        headerText.add(timerPane, 0, 1);
         
         GridPane headerPane = new GridPane();
         headerPane.getColumnConstraints().
