@@ -58,30 +58,44 @@ public class BoardSquareEventPane extends GridPane {
     private class SelectSquare implements EventHandler<MouseEvent> {
         @Override
         public void handle(MouseEvent e) {
-            int selectRow = GridPane.getRowIndex((Node) e.getSource());
+            // Mouse position
+        	int selectRow = GridPane.getRowIndex((Node) e.getSource());
             int selectCol = GridPane.getColumnIndex((Node) e.getSource());
-            
-            PieceType selectedPieceType = SetupPieces.getSelectedPieceType();
-            int selectedPieceCount = SetupPieces.getSelectedPieceCount();
-            
+
+            // Hover Piece
             Square square = Game.getBoard().getSquare(selectRow, selectCol);
+            Piece hoverPiece = square.getPiece();
+            
+            // Selected Piece
+            PieceType selectedPieceType = SetupPieces.getSelectedPieceType();
+            int selectedPieceCount = SetupPieces.getSelectedPieceCount(selectedPieceType);
+
             PieceColor playerColor = Game.getPlayer().getColor();
             
             if (Game.getStatus() == GameStatus.SETTING_UP) {
-                if (square.getPiece() != null) {
-                    if (square.getPiece().getPieceType() == selectedPieceType) {
+            	// If the square has a piece
+                if (hoverPiece != null) {
+                	// Removing existing piece (same piece on board as selected)
+                    if (hoverPiece.getPieceType() == selectedPieceType) {
                         square.setPiece(null);
-                        SetupPieces.incrementSelectedPieceCount();
+                        SetupPieces.incrementSelectedPieceCount(selectedPieceType);
+                        System.out.println("Removed existing piece (" + selectedPieceType + ")");
                     }
-                    if (square.getPiece().getPieceType() != selectedPieceType && selectedPieceCount > 0) {
+                    // Replacing existing piece with a new piece
+                    else if (hoverPiece.getPieceType() != selectedPieceType && selectedPieceCount > 0) {
+                    	SetupPieces.decrementSelectedPieceCount(selectedPieceType);
+                    	SetupPieces.incrementSelectedPieceCount(hoverPiece.getPieceType());
+                    	System.out.println("Replaced existing piece (" + hoverPiece.getPieceType() + " -> " + selectedPieceType + ")");
                         square.setPiece(new Piece(selectedPieceType, playerColor, false));
-                        SetupPieces.decrementSelectedPieceCount();
                     }
                 }
+                // If the square does not have a piece
                 else {
+                	// Placing a new piece (no existing piece)
                     if (selectedPieceType != null && selectedPieceCount > 0) {
                         square.setPiece(new Piece(selectedPieceType, playerColor, false));
-                        SetupPieces.decrementSelectedPieceCount();
+                        SetupPieces.decrementSelectedPieceCount(selectedPieceType);
+                        System.out.println("Placed new piece on empty square (" + selectedPieceType + ")");
                     }
                 }
             }

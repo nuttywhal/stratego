@@ -1,5 +1,7 @@
 package edu.asu.stratego.gui.board.setup;
 
+import java.util.HashMap;
+
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.effect.Glow;
@@ -12,24 +14,20 @@ import edu.asu.stratego.game.Game;
 import edu.asu.stratego.game.PieceType;
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.media.ImageConstants;
+import edu.asu.stratego.lang.MutableBoolean;
 
 public class SetupPieces {
-    private static boolean[] pieceSelected = new boolean[12];
-    private static int[]     availability  = new int[12];
-    
-    private ImageView[] pieceImages = new ImageView[12];
-    private Label[] pieceCount = new Label[12];
-    
+	private static HashMap<PieceType, MutableBoolean> pieceSelected = new HashMap<PieceType, MutableBoolean>(12);
+	private static HashMap<PieceType, Integer> availability = new HashMap<PieceType, Integer>(12);
+	
+	private static HashMap<PieceType, ImageView> pieceImages = new HashMap<PieceType, ImageView>(12);
+	private static HashMap<PieceType, Label> pieceCount = new HashMap<PieceType, Label>(12);
+	
+	private static PieceType selectedPieceType;
+
     public SetupPieces() {
         final double UNIT = ClientStage.getUnit();
-        
-        // Set initial piece count.
-        availability = new int[] { 8, 5, 4, 4, 4, 3, 2, 1, 1, 6, 1, 1 };
-        for (int i = 0; i < pieceCount.length; ++i) {
-            pieceCount[i] = new Label(" x" + availability[i]);
-            pieceCount[i].setFont(Font.font("Century Gothic", UNIT * 0.4));
-            pieceCount[i].setTextFill(new Color(1.0, 1.0, 1.0, 1.0));
-        }
+        selectedPieceType = null;
         
         // Get player color.
         String playerColor = Game.getPlayer().getColor().toString();
@@ -37,18 +35,34 @@ public class SetupPieces {
         // Image constants suffixes.
         String[] pieceSuffix = new String[] { "02",   "03",   "04",   "05",   "06",   "07", 
                                               "08",   "09",   "10", "BOMB",  "SPY", "FLAG" };
+        // Temp count of each piece
+        int[] tempCount = new int[] { 8, 5, 4, 4, 4, 3, 2, 1, 1, 6, 1, 1 };
         
-        // Set piece images and register event handlers.
+        // Set initial piece count.
         for (int i = 0; i < 12; ++i) {
-            pieceImages[i] = new ImageView(ImageConstants.
-                    PIECE_MAP.get(playerColor + "_" + pieceSuffix[i]));
-            pieceImages[i].setFitHeight(UNIT * 0.8);
-            pieceImages[i].setFitWidth(UNIT * 0.8);
-            GridPane.setColumnIndex(pieceImages[i], i);
+        	PieceType tempEnum = PieceType.values()[i];
+        	
+        	// Add piece availability to Map
+        	availability.put(tempEnum, tempCount[i]);
+
+        	// Add label
+            pieceCount.put(tempEnum, new Label(" x" + availability.get(tempEnum)));
+            pieceCount.get(tempEnum).setFont(Font.font("Century Gothic", UNIT * 0.4));
+            pieceCount.get(tempEnum).setTextFill(new Color(1.0, 1.0, 1.0, 1.0));
+
+            // Set piece images and register event handlers.
+            pieceImages.put(tempEnum, new ImageView(ImageConstants.
+                    PIECE_MAP.get(playerColor + "_" + pieceSuffix[i])));
+            pieceImages.get(tempEnum).setFitHeight(UNIT * 0.8);
+            pieceImages.get(tempEnum).setFitWidth(UNIT * 0.8);
+            GridPane.setColumnIndex(pieceImages.get(tempEnum), i);
             
-            pieceImages[i].addEventHandler(MouseEvent.MOUSE_PRESSED, new SelectPiece());
-        } 
-    }
+            pieceImages.get(tempEnum).addEventHandler(MouseEvent.MOUSE_PRESSED, new SelectPiece());
+            
+            // Make unselected
+            pieceSelected.put(tempEnum, new MutableBoolean(true));
+        }
+   }
     
     private class SelectPiece implements EventHandler<MouseEvent> {
         @Override
@@ -57,18 +71,22 @@ public class SetupPieces {
             int pieceNumber = GridPane.getColumnIndex(pieceImage);
             
             for (int i = 0; i < 12; ++i) {
-                if (pieceImages[i] != pieceImage) {
-                    pieceImages[i].setEffect(new Glow(0.0));
-                    pieceSelected[i] = false;
+            	PieceType tempEnum = PieceType.values()[i];
+            	
+                if (pieceImages.get(tempEnum) != pieceImage) {
+                    pieceImages.get(tempEnum).setEffect(new Glow(0.0));
+                    pieceSelected.get(tempEnum).setFalse();
                 }
                 else {
-                    if (!pieceSelected[pieceNumber]) {
+                    if (!pieceSelected.get(tempEnum).getValue()) {
+                    	selectedPieceType = tempEnum;
                         pieceImage.setEffect(new Glow(1.0));
-                        pieceSelected[pieceNumber] = true;
+                        pieceSelected.get(tempEnum).setTrue();
                     }
                     else {
+                    	selectedPieceType = null;
                         pieceImage.setEffect(new Glow(0.0));
-                        pieceSelected[pieceNumber] = false;
+                        pieceSelected.get(tempEnum).setFalse();
                     }
                 }
             }
@@ -76,43 +94,41 @@ public class SetupPieces {
     }
     
     public static PieceType getSelectedPieceType() {
-        for (int i = 0; i < 12; ++i) {
-            if (pieceSelected[i] == true)
-                return PieceType.values()[i];
-        }
-        
-        return null;
+        return selectedPieceType;
     }
     
-    public static int getSelectedPieceCount() {
-        for (int i = 0; i < 12; ++i) {
-            if (pieceSelected[i] == true)
-                return availability[i];
-        }
-        
-        return -1;
+    public static int getSelectedPieceCount(PieceType inEnum) {
+        return availability.get(inEnum);
     }
     
-    public static void incrementSelectedPieceCount() {
-        for (int i = 0; i < 12; ++i) {
-            if (pieceSelected[i] == true)
-                ++availability[i];
-        }
+    public static void incrementSelectedPieceCount(PieceType inEnum) {
+    	availability.put(inEnum, availability.get(inEnum)+1);
     }
     
-    public static void decrementSelectedPieceCount() {
-        for (int i = 0; i < 12; ++i) {
-            if (pieceSelected[i] == true)
-                --availability[i];
-        }
+    public static void decrementSelectedPieceCount(PieceType inEnum) {
+    	availability.put(inEnum, availability.get(inEnum)-1);
     }
     
     public ImageView[] getPieceImages() {
-        return pieceImages;
+    	ImageView[] tempPieceImages = new ImageView[12];
+    	
+        for (int i = 0; i < 12; ++i) {
+        	PieceType tempEnum = PieceType.values()[i];
+        	tempPieceImages[i] = pieceImages.get(tempEnum);
+        }
+        
+        return tempPieceImages;
     }
     
     public Label[] getPieceCountText() {
-        return pieceCount;
+    	Label[] tempPieceCount = new Label[12];
+    	
+        for (int i = 0; i < 12; ++i) {
+        	PieceType tempEnum = PieceType.values()[i];
+        	tempPieceCount[i] = pieceCount.get(tempEnum);
+        }
+        
+        return tempPieceCount;
     }
     
 }
