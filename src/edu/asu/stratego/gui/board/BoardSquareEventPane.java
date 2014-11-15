@@ -63,6 +63,7 @@ public class BoardSquareEventPane extends GridPane {
             int selectCol = GridPane.getColumnIndex((Node) e.getSource());
 
             // Hover Piece
+            BoardSquarePane squarePane = Game.getBoard().getSquare(selectRow, selectCol).getPiecePane();
             Square square = Game.getBoard().getSquare(selectRow, selectCol);
             Piece hoverPiece = square.getPiece();
             
@@ -72,12 +73,13 @@ public class BoardSquareEventPane extends GridPane {
 
             PieceColor playerColor = Game.getPlayer().getColor();
             
-            if (Game.getStatus() == GameStatus.SETTING_UP) {
+            if (Game.getStatus() == GameStatus.SETTING_UP && isHoverValid(selectRow, selectCol)) {
             	// If the square has a piece
                 if (hoverPiece != null) {
                 	// Removing existing piece (same piece on board as selected)
                     if (hoverPiece.getPieceType() == selectedPieceType) {
                         square.setPiece(null);
+                        squarePane.setPiece(null);
                         SetupPieces.incrementSelectedPieceCount(selectedPieceType);
                         System.out.println("Removed existing piece (" + selectedPieceType + ")");
                     }
@@ -87,6 +89,7 @@ public class BoardSquareEventPane extends GridPane {
                     	SetupPieces.incrementSelectedPieceCount(hoverPiece.getPieceType());
                     	System.out.println("Replaced existing piece (" + hoverPiece.getPieceType() + " -> " + selectedPieceType + ")");
                         square.setPiece(new Piece(selectedPieceType, playerColor, false));
+                        squarePane.setPiece(getImageFromPieceType(selectedPieceType));
                     }
                 }
                 // If the square does not have a piece
@@ -94,6 +97,7 @@ public class BoardSquareEventPane extends GridPane {
                 	// Placing a new piece (no existing piece)
                     if (selectedPieceType != null && selectedPieceCount > 0) {
                         square.setPiece(new Piece(selectedPieceType, playerColor, false));
+                        squarePane.setPiece(getImageFromPieceType(selectedPieceType));
                         SetupPieces.decrementSelectedPieceCount(selectedPieceType);
                         System.out.println("Placed new piece on empty square (" + selectedPieceType + ")");
                     }
@@ -124,6 +128,22 @@ public class BoardSquareEventPane extends GridPane {
     
     public void setPiece(Image p) {
         hover.setImage(p);
+    }
+    
+    private Image getImageFromPieceType(PieceType type) {
+        String playerColor = Game.getPlayer().getColor().toString();
+        String[] pieceSuffix = new String[] { "02",   "03",   "04",   "05",   "06",   "07", 
+                                              "08",   "09",   "10", "BOMB",  "SPY", "FLAG" };
+        
+        Image tempImage = null;
+        
+        for (int i = 0; i < 12; i++) {
+            if (type == PieceType.values()[i]) {
+                tempImage = ImageConstants.PIECE_MAP.get(playerColor + "_" + pieceSuffix[i]);
+            }
+        }
+
+        return tempImage;
     }
     
     /**

@@ -57,7 +57,7 @@ public class ImageConstants {
     public final static Image BLUE_BOMB = new Image(ImageConstants.class.getResource("images/pieces/blue/blue_bomb.png").toString());
     public final static Image BLUE_FLAG = new Image(ImageConstants.class.getResource("images/pieces/blue/blue_flag.png").toString());
     
-    // Piece Image Map.
+    // Piece Image Map (String -> Image).
     public final static HashMap<String, Image> PIECE_MAP = new HashMap<String, Image>(24);
     static {
         // Red Pieces.

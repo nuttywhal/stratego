@@ -68,7 +68,6 @@ public class SetupPieces {
         @Override
         public void handle(MouseEvent e) {
             ImageView pieceImage = (ImageView) e.getSource();
-            int pieceNumber = GridPane.getColumnIndex(pieceImage);
             
             for (int i = 0; i < 12; ++i) {
             	PieceType tempEnum = PieceType.values()[i];
