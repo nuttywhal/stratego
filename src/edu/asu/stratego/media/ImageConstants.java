@@ -9,10 +9,12 @@ public class ImageConstants {
     public final static Image stratego_logo = new Image(ImageConstants.class.getResource("images/board/stratego_logo.png").toString());
     
     // Board Images.
-    public final static Image SETUP_PANEL  = new Image(ImageConstants.class.getResource("images/board/setup_panel.png").toString());
-    public final static Image BORDER       = new Image(ImageConstants.class.getResource("images/board/border.png").toString());
-    public final static Image DARK_GRASS   = new Image(ImageConstants.class.getResource("images/board/grass1.png").toString());
-    public final static Image LIGHT_GRASS  = new Image(ImageConstants.class.getResource("images/board/grass2.png").toString());
+    public final static Image SETUP_PANEL = new Image(ImageConstants.class.getResource("images/board/setup_panel.png").toString());
+    public final static Image READY_HOVER = new Image(ImageConstants.class.getResource("images/board/ready_hover.png").toString());
+    public final static Image READY_IDLE  = new Image(ImageConstants.class.getResource("images/board/ready_idle.png").toString());
+    public final static Image BORDER      = new Image(ImageConstants.class.getResource("images/board/border.png").toString());
+    public final static Image DARK_GRASS  = new Image(ImageConstants.class.getResource("images/board/grass1.png").toString());
+    public final static Image LIGHT_GRASS = new Image(ImageConstants.class.getResource("images/board/grass2.png").toString());
 
     public final static Image HIGHLIGHT_NONE    = new Image(ImageConstants.class.getResource("images/board/highlight_none.png").toString());
     public final static Image HIGHLIGHT_VALID   = new Image(ImageConstants.class.getResource("images/board/highlight_valid.png").toString());

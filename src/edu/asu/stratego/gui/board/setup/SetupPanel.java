@@ -4,9 +4,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -22,6 +24,8 @@ import edu.asu.stratego.media.ImageConstants;
  * positions.
  */
 public class SetupPanel extends GridPane {
+    
+    ImageView startButton;
     
     /**
      * Creates a new instance of SetupPanel.
@@ -106,7 +110,7 @@ public class SetupPanel extends GridPane {
         ImageView[] pieceImages = pieces.getPieceImages();
         Label[] pieceCount = pieces.getPieceCountLabels();
         
-        GridPane.setMargin(piecePane, new Insets(0.0, 0.0, 0.0, UNIT * 0.15));
+        GridPane.setMargin(piecePane, new Insets(UNIT * 0.15, 0.0, 0.0, UNIT * 0.15));
         
         for (int i = 0; i < 12; ++i) {
             piecePane.add(pieceImages[i], i, 0);
@@ -122,18 +126,37 @@ public class SetupPanel extends GridPane {
          *                                                                               *
          * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
         
-        GridPane instructionPane = new GridPane();
-        GridPane.setMargin(instructionPane, new Insets(UNIT * 0.2, 0.0, 0.0, 0));
+        StackPane instructionPane = new StackPane();
+        GridPane.setMargin(instructionPane, new Insets(UNIT * 0.15, 0.0, 0.0, 0));
         
         // Add instructions.
         Label instructions = new Label("place a piece: select a piece above and click on the board\n" +
                                        "   remove a piece: click on an existing piece on the board");
         
+        // Ready button + event handlers.
+        startButton = new ImageView(ImageConstants.READY_IDLE);
+        startButton.setFitHeight(UNIT * 0.75);
+        startButton.setFitWidth(UNIT * 2.25);
+        
+        startButton.addEventHandler(MouseEvent.MOUSE_ENTERED_TARGET, e -> {
+            startButton.setImage(ImageConstants.READY_HOVER);
+        });
+        
+        startButton.addEventHandler(MouseEvent.MOUSE_EXITED_TARGET, e -> {
+            startButton.setImage(ImageConstants.READY_IDLE);
+        });
+        
+        startButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            // TODO Implement this handler.
+        });
+        
         // Text properties.
         instructions.setFont(Font.font("Century Gothic", UNIT * 0.3));
         instructions.setTextFill(new Color(1.0, 0.7, 0.0, 1.0));
         
-        instructionPane.add(instructions, 0, 0);
+        instructionPane.getChildren().add(instructions);
+        instructionPane.getChildren().add(startButton);
+        
         instructionPane.setAlignment(Pos.CENTER);
         
         add(instructionPane, 0, 2);

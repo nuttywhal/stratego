@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -35,12 +36,15 @@ public class SetupPieces {
 	        new HashMap<PieceType, Label>(12);
 	
 	private static PieceType selectedPieceType;
-
+	private static ColorAdjust zeroPieces = new ColorAdjust();
+	private static boolean allPiecesPlaced;
+	
 	/**
 	 * Creates a new instance of SetupPieces.
 	 */
     public SetupPieces() {
         final double UNIT = ClientStage.getUnit();
+        zeroPieces.setSaturation(-1.0);
         selectedPieceType = null;
         
         // Get the player color.
@@ -100,14 +104,16 @@ public class SetupPieces {
             	// If the piece type does not match the piece type selected...
                 if (pieceImages.get(pieceType) != pieceImage) {
                     // Un-select the piece type.
-                    pieceImages.get(pieceType).setEffect(new Glow(0.0));
+                    if (availability.get(pieceType) != 0)
+                        pieceImages.get(pieceType).setEffect(new Glow(0.0));
                     pieceSelected.get(pieceType).setFalse();
                 }
                 
                 // Otherwise...
                 else {
                     // Select the piece type if not already selected.
-                    if (!pieceSelected.get(pieceType).getValue()) {
+                    if (!pieceSelected.get(pieceType).getValue() &&
+                        availability.get(pieceType) != 0) {
                     	selectedPieceType = pieceType;
                         pieceImage.setEffect(new Glow(1.0));
                         pieceSelected.get(pieceType).setTrue();
@@ -116,7 +122,8 @@ public class SetupPieces {
                     // Un-select piece type if already selected.
                     else {
                     	selectedPieceType = null;
-                        pieceImage.setEffect(new Glow(0.0));
+                    	if (availability.get(pieceType) != 0)
+                    	    pieceImage.setEffect(new Glow(0.0));
                         pieceSelected.get(pieceType).setFalse();
                     }
                 }
@@ -147,15 +154,40 @@ public class SetupPieces {
     public static void incrementPieceCount(PieceType type) {
     	availability.put(type, availability.get(type) + 1);
     	pieceCount.get(type).setText(" x" + availability.get(type));
+    	
+    	if (availability.get(type) == 1)
+    	    pieceImages.get(type).setEffect(new Glow(0.0));
+    	allPiecesPlaced = false;
     }
     
     /**
-     * Decrements the piece type count by 1 and updates the piece type label.
+     * Decrements the piece type count by 1 and updates the piece type label. 
+     * Runs a check to see if all the pieces have been placed.
+     * 
      * @param type PieceType to decrement
      */
     public static void decrementPieceCount(PieceType type) {
     	availability.put(type, availability.get(type) - 1);
     	pieceCount.get(type).setText(" x" + availability.get(type));
+    	
+    	if (availability.get(type) == 0) {
+    	    pieceImages.get(type).setEffect(zeroPieces);
+    	    pieceSelected.get(type).setFalse();
+    	    selectedPieceType = null;
+    	}
+    	
+    	allPiecesPlaced = true;
+    	for (PieceType pieceType : PieceType.values()) {
+    	    if (availability.get(pieceType) > 0)
+    	        allPiecesPlaced = false;
+    	}
+    }
+    
+    /**
+     * @return true if all the pieces have been placed, false otherwise
+     */
+    public static boolean getAllPiecesPlaced() {
+        return allPiecesPlaced;
     }
     
     /**
@@ -187,5 +219,4 @@ public class SetupPieces {
         
         return pieceCountLabels;
     }
-    
 }

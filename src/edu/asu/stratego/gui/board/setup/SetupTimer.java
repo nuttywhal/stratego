@@ -5,6 +5,8 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
@@ -17,7 +19,7 @@ import edu.asu.stratego.gui.ClientStage;
  * A setup timer. This timer counts down from a start time.
  */
 public class SetupTimer {
-    private static final int START_TIME = 300;  // Madness? THIS IS SPARTA!
+    private static final int START_TIME = 5;  // Madness? THIS IS SPARTA!
     private Timeline timeline;
     private Label timerLabel = new Label();
     private IntegerProperty secondsLeft = 
@@ -47,6 +49,7 @@ public class SetupTimer {
                     new KeyFrame(Duration.seconds(START_TIME + 1),
                     new KeyValue(secondsLeft, 0)));
             timeline.playFromStart();
+            timeline.setOnFinished(new TimerFinished());
         }
     }
     
@@ -65,5 +68,15 @@ public class SetupTimer {
      */
     public Label getLabel() {
         return timerLabel;
+    }
+    
+    /**
+     * Executes when the timer finishes counting down to zero.
+     */
+    private class TimerFinished implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            System.out.println("TIMER HIT 0!!!");
+        }
     }
 }
