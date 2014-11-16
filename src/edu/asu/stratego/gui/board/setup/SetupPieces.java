@@ -141,19 +141,21 @@ public class SetupPieces {
     }
     
     /**
-     * Increments the piece type count by 1.
+     * Increments the piece type count by 1 and updates the piece type label.
      * @param type PieceType to increment
      */
     public static void incrementPieceCount(PieceType type) {
     	availability.put(type, availability.get(type) + 1);
+    	pieceCount.get(type).setText(" x" + availability.get(type));
     }
     
     /**
-     * Decrements the piece type count by 1.
+     * Decrements the piece type count by 1 and updates the piece type label.
      * @param type PieceType to decrement
      */
     public static void decrementPieceCount(PieceType type) {
     	availability.put(type, availability.get(type) - 1);
+    	pieceCount.get(type).setText(" x" + availability.get(type));
     }
     
     /**
@@ -176,14 +178,14 @@ public class SetupPieces {
      * each piece type that still need to be placed.
      */
     public Label[] getPieceCountLabels() {
-    	Label[] tempPieceCount = new Label[12];
+    	Label[] pieceCountLabels = new Label[12];
     	
         for (int i = 0; i < 12; ++i) {
-        	PieceType tempEnum = PieceType.values()[i];
-        	tempPieceCount[i] = pieceCount.get(tempEnum);
+        	PieceType pieceType = PieceType.values()[i];
+        	pieceCountLabels[i] = pieceCount.get(pieceType);
         }
         
-        return tempPieceCount;
+        return pieceCountLabels;
     }
     
 }
