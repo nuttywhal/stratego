@@ -7,8 +7,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+
 import edu.asu.stratego.game.Game;
-import edu.asu.stratego.game.PieceColor;
 import edu.asu.stratego.gui.board.BoardTurnIndicator;
 import edu.asu.stratego.gui.board.setup.SetupPanel;
 import edu.asu.stratego.media.ImageConstants;
@@ -29,12 +29,12 @@ public class BoardScene {
      */
     public BoardScene() {
         
-        // TODO !!! Remove after development is complete. !!!
-        Game.getPlayer().setNickname("Player 1");
-        Game.getOpponent().setNickname("Player 2");
-        Game.getPlayer().setColor(PieceColor.BLUE);
-        Game.getOpponent().setColor(PieceColor.RED);
-        // TODO !!! Remove after development is complete. !!!
+//        // TODO !!! Remove after development is complete. !!!
+//        Game.getPlayer().setNickname("Player 1");
+//        Game.getOpponent().setNickname("Player 2");
+//        Game.getPlayer().setColor(PieceColor.BLUE);
+//        Game.getOpponent().setColor(PieceColor.RED);
+//        // TODO !!! Remove after development is complete. !!!
         
         /* ================ Board Design ================
          * 
@@ -82,7 +82,7 @@ public class BoardScene {
         }
         
         // Create the setup panel.
-        SetupPanel panel = new SetupPanel();
+        new SetupPanel();
         GridPane setupPanel = SetupPanel.getSetupPanel();
         StackPane.setMargin(setupPanel, new Insets(UNIT, 0, 0, 0));
         StackPane.setAlignment(setupPanel, Pos.TOP_CENTER);

@@ -14,7 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-
+import edu.asu.stratego.game.ClientGameManager;
 import edu.asu.stratego.game.Game;
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.media.ImageConstants;
@@ -31,6 +31,7 @@ public class SetupPanel {
     private static Object    updateReadyStatus = new Object();
     private static StackPane instructionPane   = new StackPane();
     private static Label     instructions      = new Label();
+    private static Label     readyLabel        = new Label();
     private static ImageView readyButton       = new ImageView();
     
     /**
@@ -130,7 +131,7 @@ public class SetupPanel {
          *                                                                               *
          * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
         
-        GridPane.setMargin(instructionPane, new Insets(UNIT * 0.15, 0.0, 0.0, 0));
+        GridPane.setMargin(instructionPane, new Insets(UNIT * 0.15, 0.0, 0.0, 0.0));
         
         // Add instructions.
         instructions.setText("place a piece: select a piece above and click on the board\n" +
@@ -150,10 +151,7 @@ public class SetupPanel {
         });
         
         readyButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            Platform.runLater(() -> {
-                setupPanel.getChildren().remove(instructionPane);
-                setupPanel.getChildren().remove(piecePane);
-            });
+            Platform.runLater(() -> { finishSetup(); } );
         });
         
         // Text properties.
@@ -170,6 +168,18 @@ public class SetupPanel {
         instructionPane.setAlignment(Pos.CENTER);
         
         setupPanel.add(instructionPane, 0, 2);
+        
+        
+        /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+         *                                                                               *
+         *                        C R E A T E   U I :   R E A D Y                        *
+         *                                                                               *
+         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        
+        GridPane.setMargin(readyLabel, new Insets(UNIT * 0.8, 0.0, 0.0, UNIT * 1.5));
+        readyLabel.setText("Waiting for opponent...");
+        readyLabel.setFont(Font.font("Century Gothic", UNIT * 0.6));
+        readyLabel.setTextFill(new Color(1.0, 0.7, 0.0, 1.0));
     }
     
     /**
@@ -190,6 +200,24 @@ public class SetupPanel {
      */
     public static GridPane getSetupPanel() {
         return setupPanel;
+    }
+    
+    /**
+     * When the player has all of their pieces placed on the board and is ready 
+     * to start playing, this method is called. Notifies the ClientGameManager 
+     * to send the initial piece positions to the server and receive the 
+     * opponent's initial piece positions.
+     */
+    public static void finishSetup() {
+        Object setupPieces = ClientGameManager.getSetupPieces();
+        
+        synchronized (setupPieces) {
+            setupPanel.getChildren().remove(instructionPane);
+            setupPanel.getChildren().remove(piecePane);
+            setupPanel.add(readyLabel, 0, 1);
+            
+            setupPieces.notify();
+        }
     }
 
     /**

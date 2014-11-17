@@ -2,7 +2,7 @@ package edu.asu.stratego.gui.board;
 
 import javafx.scene.layout.GridPane;
 
-import edu.asu.stratego.game.board.Board;
+import edu.asu.stratego.game.board.ClientBoard;
 
 /**
  * Layered directly on top of the BoardPane. Allows the player to interact with 
@@ -14,7 +14,7 @@ public class BoardEventPane extends GridPane {
      * Creates a new instance of BoardPane.
      * @param board the Stratego board model
      */
-    public BoardEventPane(Board board) {
+    public BoardEventPane(ClientBoard board) {
         final int size = 10;
         
         // Initiate piece layer.

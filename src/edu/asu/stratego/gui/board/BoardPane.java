@@ -2,7 +2,7 @@ spackage edu.asu.stratego.gui.board;
 
 import javafx.scene.layout.GridPane;
 
-import edu.asu.stratego.game.board.Board;
+import edu.asu.stratego.game.board.ClientBoard;
 import edu.asu.stratego.media.ImageConstants;
 
 /**
@@ -14,7 +14,7 @@ public class BoardPane extends GridPane {
      * Creates a new instance of BoardPane.
      * @param board the Stratego board model
      */
-    public BoardPane(Board board) {
+    public BoardPane(ClientBoard board) {
         final int size = 10;
         
         // Initiate board pane.

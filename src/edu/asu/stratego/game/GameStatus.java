@@ -5,6 +5,7 @@ package edu.asu.stratego.game;
  */
 public enum GameStatus {
     SETTING_UP,
+    WAITING_OPP,
     IN_PROGRESS,
     RED_CAPTURED,
     BLUE_CAPTURED,

@@ -1,6 +1,6 @@
 package edu.asu.stratego.game;
 
-import edu.asu.stratego.game.board.Board;
+import edu.asu.stratego.game.board.ClientBoard;
 
 /**
  * Contains information about the Stratego game, which is shared between the 
@@ -15,7 +15,7 @@ public class Game {
     
     private static GameStatus status;
     private static PieceColor turn;
-    private static Board board;
+    private static ClientBoard board;
     
     /**
      * Initializes data fields for a new game.
@@ -27,7 +27,7 @@ public class Game {
         status = GameStatus.SETTING_UP;
         turn   = PieceColor.RED;
         
-        board = new Board();
+        board = new ClientBoard();
     }
 
     /**
@@ -89,14 +89,14 @@ public class Game {
     /**
      * @return the game board.
      */
-    public static Board getBoard() {
+    public static ClientBoard getBoard() {
         return board;
     }
 
     /**
      * @param board the game board
      */
-    public static void setBoard(Board board) {
+    public static void setBoard(ClientBoard board) {
         Game.board = board;
     }
 }

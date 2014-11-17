@@ -14,7 +14,8 @@ import edu.asu.stratego.game.GameStatus;
 import edu.asu.stratego.game.Piece;
 import edu.asu.stratego.game.PieceColor;
 import edu.asu.stratego.game.PieceType;
-import edu.asu.stratego.game.board.Square;
+import edu.asu.stratego.game.board.ClientSquare;
+import edu.asu.stratego.gui.board.setup.SetupPanel;
 import edu.asu.stratego.gui.board.setup.SetupPieces;
 import edu.asu.stratego.media.ImageConstants;
 
@@ -85,7 +86,7 @@ public class BoardSquareEventPane extends GridPane {
                     .getSquare(row, col)
                     .getPiecePane();
             
-            Square square = Game.getBoard().getSquare(row, col);
+            ClientSquare square = Game.getBoard().getSquare(row, col);
             Piece squarePiece = square.getPiece();
             
             // Player color.
@@ -144,7 +145,7 @@ public class BoardSquareEventPane extends GridPane {
         for (int col = 0; col < 10; ++col) {
             for (int row = 6; row < 10; ++row) {
                 BoardSquarePane squarePane = Game.getBoard().getSquare(row, col).getPiecePane();
-                Square square = Game.getBoard().getSquare(row, col);
+                ClientSquare square = Game.getBoard().getSquare(row, col);
                 Piece squarePiece = square.getPiece();
                
                 ArrayList<PieceType> availTypes = 
@@ -167,6 +168,8 @@ public class BoardSquareEventPane extends GridPane {
                 }
             }
         }
+        
+        SetupPanel.finishSetup();
     }
     
     /**
@@ -187,6 +190,10 @@ public class BoardSquareEventPane extends GridPane {
         
         // The game is setting up and the square is outside of the setup area.
         if (Game.getStatus() == GameStatus.SETTING_UP && row <= 5)
+            return false;
+        
+        // The player has finished setting up and is waiting for the opponent.
+        if (Game.getStatus() == GameStatus.WAITING_OPP)
             return false;
         
         return true;

@@ -5,12 +5,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import edu.asu.stratego.game.board.ServerBoard;
+
 /**
  * Task to manage a Stratego game between two clients.
  */
 public class ServerGameManager implements Runnable {
 
     private final String session;
+    
+    private ServerBoard board = new ServerBoard();
     
     private ObjectOutputStream toPlayerOne;
     private ObjectOutputStream toPlayerTwo;
@@ -48,10 +52,11 @@ public class ServerGameManager implements Runnable {
     public void run() {
         createIOStreams();
         exchangePlayers();
+        exchangeSetup();
         
         // TODO Implement the rest of ServerGameManager here.
     }
-    
+
     /**
      * Establish IO object streams to facilitate communication between the 
      * client and server.
@@ -97,5 +102,19 @@ public class ServerGameManager implements Runnable {
             // TODO Handle this exception somehow...
             e.printStackTrace();
         }
+    }
+    
+    private void exchangeSetup() {
+        try {
+            SetupBoard setupBoardOne = (SetupBoard) fromPlayerOne.readObject();
+            SetupBoard setupBoardTwo = (SetupBoard) fromPlayerTwo.readObject();
+            
+            System.out.println("Boards successfully received.");
+        }
+        catch (ClassNotFoundException | IOException e) {
+            // TODO Handle this exception somehow...
+            e.printStackTrace();
+        }
+        
     }
 }
