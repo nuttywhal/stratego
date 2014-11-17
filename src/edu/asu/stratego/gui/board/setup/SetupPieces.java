@@ -149,6 +149,9 @@ public class SetupPieces {
     
     /**
      * Increments the piece type count by 1 and updates the piece type label.
+     * Signals SetupPanel to update the ready button if all of the pieces are 
+     * placed.
+     * 
      * @param type PieceType to increment
      */
     public static void incrementPieceCount(PieceType type) {
@@ -158,11 +161,17 @@ public class SetupPieces {
     	if (availability.get(type) == 1)
     	    pieceImages.get(type).setEffect(new Glow(0.0));
     	allPiecesPlaced = false;
+    	
+    	Object updateReadyStatus = SetupPanel.getUpdateReadyStatus();
+    	synchronized (updateReadyStatus) {
+    	    updateReadyStatus.notify();
+    	}
     }
     
     /**
      * Decrements the piece type count by 1 and updates the piece type label. 
-     * Runs a check to see if all the pieces have been placed.
+     * Runs a check to see if all the pieces have been placed. Signals 
+     * SetupPanel to update the ready button if all of the pieces are placed.
      * 
      * @param type PieceType to decrement
      */
@@ -181,6 +190,11 @@ public class SetupPieces {
     	    if (availability.get(pieceType) > 0)
     	        allPiecesPlaced = false;
     	}
+    	
+    	Object updateReadyStatus = SetupPanel.getUpdateReadyStatus();
+        synchronized (updateReadyStatus) {
+            updateReadyStatus.notify();
+        }
     }
     
     /**

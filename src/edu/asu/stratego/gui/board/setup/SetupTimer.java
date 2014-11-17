@@ -19,7 +19,7 @@ import edu.asu.stratego.gui.ClientStage;
  * A setup timer. This timer counts down from a start time.
  */
 public class SetupTimer {
-    private static final int START_TIME = 5;  // Madness? THIS IS SPARTA!
+    private static final int START_TIME = 300;  // Madness? THIS IS SPARTA!
     private Timeline timeline;
     private Label timerLabel = new Label();
     private IntegerProperty secondsLeft = 

@@ -1,5 +1,6 @@
 package edu.asu.stratego.gui.board.setup;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -25,7 +26,10 @@ import edu.asu.stratego.media.ImageConstants;
  */
 public class SetupPanel extends GridPane {
     
-    ImageView startButton;
+    private static Object    updateReadyStatus = new Object();
+    private static StackPane instructionPane   = new StackPane();
+    private static Label     instructions      = new Label();
+    private static ImageView readyButton       = new ImageView();
     
     /**
      * Creates a new instance of SetupPanel.
@@ -126,27 +130,26 @@ public class SetupPanel extends GridPane {
          *                                                                               *
          * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
         
-        StackPane instructionPane = new StackPane();
         GridPane.setMargin(instructionPane, new Insets(UNIT * 0.15, 0.0, 0.0, 0));
         
         // Add instructions.
-        Label instructions = new Label("place a piece: select a piece above and click on the board\n" +
-                                       "   remove a piece: click on an existing piece on the board");
+        instructions.setText("place a piece: select a piece above and click on the board\n" +
+                             "   remove a piece: click on an existing piece on the board");
         
         // Ready button + event handlers.
-        startButton = new ImageView(ImageConstants.READY_IDLE);
-        startButton.setFitHeight(UNIT * 0.75);
-        startButton.setFitWidth(UNIT * 2.25);
+        readyButton.setImage(ImageConstants.READY_IDLE);
+        readyButton.setFitHeight(UNIT * 0.75);
+        readyButton.setFitWidth(UNIT * 2.25);
         
-        startButton.addEventHandler(MouseEvent.MOUSE_ENTERED_TARGET, e -> {
-            startButton.setImage(ImageConstants.READY_HOVER);
+        readyButton.addEventHandler(MouseEvent.MOUSE_ENTERED_TARGET, e -> {
+            readyButton.setImage(ImageConstants.READY_HOVER);
         });
         
-        startButton.addEventHandler(MouseEvent.MOUSE_EXITED_TARGET, e -> {
-            startButton.setImage(ImageConstants.READY_IDLE);
+        readyButton.addEventHandler(MouseEvent.MOUSE_EXITED_TARGET, e -> {
+            readyButton.setImage(ImageConstants.READY_IDLE);
         });
         
-        startButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+        readyButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             // TODO Implement this handler.
         });
         
@@ -154,11 +157,74 @@ public class SetupPanel extends GridPane {
         instructions.setFont(Font.font("Century Gothic", UNIT * 0.3));
         instructions.setTextFill(new Color(1.0, 0.7, 0.0, 1.0));
         
-        instructionPane.getChildren().add(instructions);
-        instructionPane.getChildren().add(startButton);
+        // Worker thread to update the ready button when all of the pieces 
+        // have been placed.
+        Thread updateButton = new Thread(new UpdateReadyButton());
+        updateButton.setDaemon(true);
+        updateButton.start();
         
+        instructionPane.getChildren().add(instructions);
         instructionPane.setAlignment(Pos.CENTER);
         
         add(instructionPane, 0, 2);
+    }
+    
+    /**
+     * @return the object to communicate the status of the setup pieces between 
+     * SetupPieces and the SetupPanel so that UpdateReadyButton can decide 
+     * whether or not to display the ready button.
+     * 
+     * @see edu.asu.stratego.gui.board.setup.SetupPanel
+     * @see edu.asu.stratego.gui.board.setup.SetupPieces
+     * @see edu.asu.stratego.gui.board.setup.SetupPanel.UpdateReadyButton
+     */
+    public static Object getUpdateReadyStatus() {
+        return updateReadyStatus;
+    }
+
+    /**
+     * Worker task that waits for a Setup Piece to be incremented or 
+     * decremented. If all of the pieces have been placed, this task removes 
+     * the instructions from the panel and adds the ready button to the panel. 
+     * If the ready button is 
+     */
+    private class UpdateReadyButton implements Runnable {
+        @Override
+        public void run() {
+            // instructionPane should update only when the state is changed.
+            boolean readyState = false;
+            
+            synchronized (updateReadyStatus) {
+                while (true) {
+                    try {
+                        // Wait for piece type to increment / decrement.
+                        updateReadyStatus.wait();
+                    
+                        // Remove instructions, add ready button.
+                        if (SetupPieces.getAllPiecesPlaced() && !readyState) {
+                            Platform.runLater(() -> {
+                                instructionPane.getChildren().remove(instructions);
+                                instructionPane.getChildren().add(readyButton);
+                            });
+                            
+                            readyState = true;
+                        }
+                        
+                        // Remove ready button, add instructions.
+                        else if (!SetupPieces.getAllPiecesPlaced() && readyState) {
+                            Platform.runLater(() -> {
+                                instructionPane.getChildren().remove(readyButton);
+                                instructionPane.getChildren().add(instructions);
+                            });
+                            
+                            readyState = false;
+                        }
+                    }
+                    catch (InterruptedException e) {
+                        // TODO Handle this exception somehow...
+                    }
+                }
+            }
+        }
     }
 }
