@@ -14,6 +14,7 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import edu.asu.stratego.gui.ClientStage;
+import edu.asu.stratego.gui.board.BoardSquareEventPane;
 
 /**
  * A setup timer. This timer counts down from a start time.
@@ -76,7 +77,7 @@ public class SetupTimer {
     private class TimerFinished implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-            System.out.println("TIMER HIT 0!!!");
+            BoardSquareEventPane.randomSetup();
         }
     }
 }

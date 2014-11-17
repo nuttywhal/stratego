@@ -1,5 +1,8 @@
 package edu.asu.stratego.gui.board;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
@@ -126,6 +129,41 @@ public class BoardSquareEventPane extends GridPane {
                         squarePane.setPiece(square.getPiece().getPieceSprite());
                         SetupPieces.decrementPieceCount(selectedPiece);
                     }
+                }
+            }
+        }
+    }
+    
+    /**
+     * During the Setup phase of the game, this method randomly places the 
+     * pieces that have not yet been placed when the Setup Timer hits 0.
+     */
+    public static void randomSetup() {
+        PieceColor playerColor = Game.getPlayer().getColor();
+        
+        for (int col = 0; col < 10; ++col) {
+            for (int row = 6; row < 10; ++row) {
+                BoardSquarePane squarePane = Game.getBoard().getSquare(row, col).getPiecePane();
+                Square square = Game.getBoard().getSquare(row, col);
+                Piece squarePiece = square.getPiece();
+               
+                ArrayList<PieceType> availTypes = 
+                        new ArrayList<PieceType>(Arrays.asList(PieceType.values()));
+               
+                if(squarePiece == null) {
+                        PieceType pieceType = null;
+                       
+                    while(pieceType == null) {
+                        int randInt = (int) (Math.random() * availTypes.size());
+                        if(SetupPieces.getPieceCount(availTypes.get(randInt)) > 0)
+                                pieceType = availTypes.get(randInt);
+                        else
+                                availTypes.remove(randInt);
+                    }
+                   
+                    square.setPiece(new Piece(pieceType, playerColor, false));
+                    squarePane.setPiece(square.getPiece().getPieceSprite());
+                    SetupPieces.decrementPieceCount(pieceType);
                 }
             }
         }

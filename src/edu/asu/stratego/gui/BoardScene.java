@@ -4,9 +4,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-
 import edu.asu.stratego.game.Game;
 import edu.asu.stratego.game.PieceColor;
 import edu.asu.stratego.gui.board.BoardTurnIndicator;
@@ -83,8 +83,9 @@ public class BoardScene {
         
         // Create the setup panel.
         SetupPanel panel = new SetupPanel();
-        StackPane.setMargin(panel, new Insets(UNIT, 0, 0, 0));
-        StackPane.setAlignment(panel, Pos.TOP_CENTER);
+        GridPane setupPanel = SetupPanel.getSetupPanel();
+        StackPane.setMargin(setupPanel, new Insets(UNIT, 0, 0, 0));
+        StackPane.setAlignment(setupPanel, Pos.TOP_CENTER);
         
         // Create the border.
         ImageView border = new ImageView(ImageConstants.BORDER);
@@ -94,7 +95,7 @@ public class BoardScene {
         
         // Show Board GUI.
         StackPane root = new StackPane(background, Game.getBoard().getPiecePane(), 
-                                       Game.getBoard().getEventPane(), panel, border);
+                                       Game.getBoard().getEventPane(), setupPanel, border);
         root.setMaxSize(SIDE, SIDE);
         Game.getBoard().getPiecePane().setAlignment(Pos.CENTER);
         Game.getBoard().getEventPane().setAlignment(Pos.CENTER);

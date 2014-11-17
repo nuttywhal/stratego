@@ -24,8 +24,10 @@ import edu.asu.stratego.media.ImageConstants;
  * Players interact with this panel to set up their pieces to their starting 
  * positions.
  */
-public class SetupPanel extends GridPane {
+public class SetupPanel {
     
+    private static GridPane  setupPanel        = new GridPane();
+    private static GridPane  piecePane         = new GridPane();
     private static Object    updateReadyStatus = new Object();
     private static StackPane instructionPane   = new StackPane();
     private static Label     instructions      = new Label();
@@ -37,12 +39,12 @@ public class SetupPanel extends GridPane {
     public SetupPanel() {
         final double UNIT = ClientStage.getUnit();
         
-        this.setMaxHeight(UNIT * 4);
-        this.setMaxWidth(UNIT * 10);
+        setupPanel.setMaxHeight(UNIT * 4);
+        setupPanel.setMaxWidth(UNIT * 10);
         
         // Panel background.
         String backgroundURL = "edu/asu/stratego/media/images/board/setup_panel.png";
-        this.setStyle("-fx-background-image: url(" + backgroundURL + "); " + 
+        setupPanel.setStyle("-fx-background-image: url(" + backgroundURL + "); " + 
                       "-fx-background-size: " + UNIT * 10 + " " + UNIT * 5 + ";" +
                       "-fx-background-repeat: stretch;");
         
@@ -99,7 +101,7 @@ public class SetupPanel extends GridPane {
         headerPane.add(headerLine, 1, 0);
         headerPane.add(headerText, 2, 0);
         
-        add(headerPane, 0, 0);
+        setupPanel.add(headerPane, 0, 0);
         
         
         /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -107,8 +109,6 @@ public class SetupPanel extends GridPane {
          *                          C R E A T E   U I :   B O D Y                        *
          *                                                                               *
          * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-        
-        GridPane piecePane = new GridPane();
         
         SetupPieces pieces = new SetupPieces();
         ImageView[] pieceImages = pieces.getPieceImages();
@@ -121,7 +121,7 @@ public class SetupPanel extends GridPane {
             piecePane.add(pieceCount[i], i, 1);
         }
         
-        add(piecePane, 0, 1);
+        setupPanel.add(piecePane, 0, 1);
         
         
         /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -150,7 +150,10 @@ public class SetupPanel extends GridPane {
         });
         
         readyButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            // TODO Implement this handler.
+            Platform.runLater(() -> {
+                setupPanel.getChildren().remove(instructionPane);
+                setupPanel.getChildren().remove(piecePane);
+            });
         });
         
         // Text properties.
@@ -166,7 +169,7 @@ public class SetupPanel extends GridPane {
         instructionPane.getChildren().add(instructions);
         instructionPane.setAlignment(Pos.CENTER);
         
-        add(instructionPane, 0, 2);
+        setupPanel.add(instructionPane, 0, 2);
     }
     
     /**
@@ -180,6 +183,13 @@ public class SetupPanel extends GridPane {
      */
     public static Object getUpdateReadyStatus() {
         return updateReadyStatus;
+    }
+    
+    /**
+     * @return the SetupPanel (JavaFX GridPane)
+     */
+    public static GridPane getSetupPanel() {
+        return setupPanel;
     }
 
     /**
