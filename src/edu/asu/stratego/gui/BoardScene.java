@@ -71,7 +71,7 @@ public class BoardScene {
         
         // Set the background color (turn indicator).
         BoardTurnIndicator indicator = new BoardTurnIndicator();
-        Rectangle background = indicator.getTurnIndicator();
+        Rectangle background = BoardTurnIndicator.getTurnIndicator();
         
         // Resize the board.
         final int size = 10;

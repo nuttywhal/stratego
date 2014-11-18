@@ -62,12 +62,8 @@ public class BoardTurnIndicator {
         public void run() {
             synchronized (turnIndicatorTrigger) {
                 try {
-                    System.out.println("Inside UpdateColor task");
-                    
                     // Wait for player turn color to change.
                     turnIndicatorTrigger.wait();
-                    
-                    System.out.println("Received notification from GameServerManager");
                     
                     Platform.runLater(() -> {
                         // Blue -> Red.
@@ -86,8 +82,6 @@ public class BoardTurnIndicator {
                             ft.play();
                         }
                     });
-                    
-                    System.out.println("Board changed color (in theory)");
                 }
                 catch (InterruptedException e) {
                     // TODO Handle this exception somehow...

@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javafx.application.Platform;
+
 import edu.asu.stratego.game.board.ClientSquare;
 import edu.asu.stratego.gui.BoardScene;
 import edu.asu.stratego.gui.ClientStage;
@@ -171,8 +172,13 @@ public class ClientGameManager implements Runnable {
                     BoardTurnIndicator.getTurnIndicatorTrigger().notify();
                 }
                 
-                // If player turn, make move and send to server.
-                // Else, wait for opponent move from server.
+                
+                if (Game.getPlayer().getColor() == Game.getTurn()) {
+                    // TODO Player move.
+                }
+                else {
+                    // TODO Wait opponent move.
+                }
                 
                 // Get game status from server.
             } 

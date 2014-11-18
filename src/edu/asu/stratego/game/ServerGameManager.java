@@ -25,6 +25,7 @@ public class ServerGameManager implements Runnable {
     private Player playerTwo = new Player();
     
     private PieceColor turn;
+    private Move move;
     
     private Socket socketOne;
     private Socket socketTwo;
@@ -157,9 +158,9 @@ public class ServerGameManager implements Runnable {
                 toPlayerOne.writeObject(turn);
                 toPlayerTwo.writeObject(turn);
                 
-                System.out.println("Sent turn color to clients");
-                
                 // Get turn from client.
+                
+                
                 // Check valid move.
                 // Check win conditions.
             }
