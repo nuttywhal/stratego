@@ -9,8 +9,8 @@ import edu.asu.stratego.game.board.ClientSquare;
 import edu.asu.stratego.gui.BoardScene;
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.gui.ConnectionScene;
+import edu.asu.stratego.gui.board.BoardTurnIndicator;
 import edu.asu.stratego.media.ImageConstants;
-import edu.asu.stratego.util.HashTables;
 
 /**
  * Task to handle the Stratego game on the client-side.
@@ -158,8 +158,28 @@ public class ClientGameManager implements Runnable {
     private void playGame() {
         Platform.runLater(() -> {
             BoardScene.getRootPane().getChildren().remove(BoardScene.getSetupPanel());
+            Game.setStatus(GameStatus.IN_PROGRESS);
         });
         
-        
+        while (Game.getStatus() == GameStatus.IN_PROGRESS) {
+            try {
+                // Get turn color from server.
+                Game.setTurn((PieceColor) fromServer.readObject());
+                
+                // Notify turn indicator.
+                synchronized (BoardTurnIndicator.getTurnIndicatorTrigger()) {
+                    BoardTurnIndicator.getTurnIndicatorTrigger().notify();
+                }
+                
+                // If player turn, make move and send to server.
+                // Else, wait for opponent move from server.
+                
+                // Get game status from server.
+            } 
+            catch (ClassNotFoundException | IOException e) {
+                // TODO Handle this exception somehow...
+                e.printStackTrace();
+            }
+        }
     }
 }

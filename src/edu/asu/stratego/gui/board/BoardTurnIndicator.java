@@ -1,7 +1,10 @@
 package edu.asu.stratego.gui.board;
 
+import javafx.animation.FillTransition;
+import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import edu.asu.stratego.game.Game;
 import edu.asu.stratego.game.PieceColor;
@@ -14,7 +17,11 @@ import edu.asu.stratego.gui.ClientStage;
  */
 public class BoardTurnIndicator {
     
-    Rectangle turnIndicator;
+    private static Color red  = new Color(0.48, 0.13, 0.13, 1.0);
+    private static Color blue = new Color(0.22, 0.24, 0.55, 1.0);
+    
+    private static Object turnIndicatorTrigger = new Object();
+    private static Rectangle turnIndicator;
     
     /**
      * Creates a new instance of BoardTurnIndicator.
@@ -25,15 +32,68 @@ public class BoardTurnIndicator {
         
         // Set the setup game turn color.
         if (Game.getPlayer().getColor() == PieceColor.RED)
-            turnIndicator.setFill(new Color(0.48, 0.13, 0.13, 1.0));
+            turnIndicator.setFill(red);
         else
-            turnIndicator.setFill(new Color(0.22, 0.24, 0.55, 1.0));
+            turnIndicator.setFill(blue);
+        
+        // Start thread to automatically update turn color.
+        Thread updateColor = new Thread(new UpdateColor());
+        updateColor.setDaemon(true);
+        updateColor.start();
     }
     
     /**
      * @return the turn indicator (JavaFX rectangle)
      */
-    public Rectangle getTurnIndicator() {
+    public static Rectangle getTurnIndicator() {
         return turnIndicator;
+    }
+    
+    /**
+     * @return Object used to communicate between the ClientGameManager and the 
+     * BoardTurnIndicator to indicate when the player turn color has changed.
+     */
+    public static Object getTurnIndicatorTrigger() {
+        return turnIndicatorTrigger;
+    }
+    
+    private class UpdateColor implements Runnable {
+        @Override
+        public void run() {
+            synchronized (turnIndicatorTrigger) {
+                try {
+                    System.out.println("Inside UpdateColor task");
+                    
+                    // Wait for player turn color to change.
+                    turnIndicatorTrigger.wait();
+                    
+                    System.out.println("Received notification from GameServerManager");
+                    
+                    Platform.runLater(() -> {
+                        // Blue -> Red.
+                        if (Game.getTurn() == PieceColor.RED && 
+                                BoardTurnIndicator.getTurnIndicator().getFill() != red) {
+                            FillTransition ft = new FillTransition(Duration.millis(2000), 
+                                    BoardTurnIndicator.getTurnIndicator(), blue, red);
+                            ft.play();
+                        }
+                        
+                        // Red -> Blue.
+                        else if (Game.getTurn() == PieceColor.BLUE && 
+                                BoardTurnIndicator.getTurnIndicator().getFill() != blue) {
+                            FillTransition ft = new FillTransition(Duration.millis(3000), 
+                                    BoardTurnIndicator.getTurnIndicator(), red, blue);
+                            ft.play();
+                        }
+                    });
+                    
+                    System.out.println("Board changed color (in theory)");
+                }
+                catch (InterruptedException e) {
+                    // TODO Handle this exception somehow...
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

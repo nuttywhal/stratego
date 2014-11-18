@@ -24,6 +24,8 @@ public class ServerGameManager implements Runnable {
     private Player playerOne = new Player();
     private Player playerTwo = new Player();
     
+    private PieceColor turn;
+    
     private Socket socketOne;
     private Socket socketTwo;
     
@@ -40,6 +42,8 @@ public class ServerGameManager implements Runnable {
         this.session = "Session " + sessionNum + ": ";
         this.socketOne = sockOne;
         this.socketTwo = sockTwo;
+        
+        this.turn = PieceColor.RED;
     }
     
     /**
@@ -54,7 +58,7 @@ public class ServerGameManager implements Runnable {
         exchangePlayers();
         exchangeSetup();
         
-        // TODO Implement the rest of ServerGameManager here.
+        playGame();
     }
 
     /**
@@ -140,5 +144,29 @@ public class ServerGameManager implements Runnable {
             e.printStackTrace();
         }
         
+    }
+    
+    private void playGame() {
+        // TODO Implement method to check for legal moves.
+        
+//        while () {
+            try {
+                System.out.println("Inside playGame()");
+                
+                // Send player turn color to clients.
+                toPlayerOne.writeObject(turn);
+                toPlayerTwo.writeObject(turn);
+                
+                System.out.println("Sent turn color to clients");
+                
+                // Get turn from client.
+                // Check valid move.
+                // Check win conditions.
+            }
+            catch (IOException e) {
+                // TODO Handle this exception somehow...
+                e.printStackTrace();
+            }
+//        }
     }
 }
