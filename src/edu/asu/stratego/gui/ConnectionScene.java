@@ -90,10 +90,11 @@ public class ConnectionScene {
  
             nickname = nicknameField.getText();
             serverIP = serverIPField.getText();
-           
-            if (nickname == null)
+            
+            // Default values.
+            if (nickname.equals(""))
                 nickname = "Player";
-            if (serverIP == "")
+            if (serverIP.equals(""))
                 serverIP = "localhost";
            
             Game.getPlayer().setNickname(nickname);

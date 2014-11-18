@@ -109,7 +109,17 @@ public class ServerGameManager implements Runnable {
             SetupBoard setupBoardOne = (SetupBoard) fromPlayerOne.readObject();
             SetupBoard setupBoardTwo = (SetupBoard) fromPlayerTwo.readObject();
             
-            System.out.println("Boards successfully received.");
+            for (int row = 0; row < 4; ++row) {
+                for (int col = 0; col < 10; ++col) {
+                    board.getSquare(row, col).setPiece(setupBoardOne.getPiece(row, col));
+                    board.getSquare(row + 6, 10 - col).setPiece(setupBoardTwo.getPiece(row, col));
+                    
+                    //setupBoardOne.setPiece();
+                }
+            }
+            
+            toPlayerOne.writeObject(setupBoardTwo);
+            toPlayerTwo.writeObject(setupBoardOne);
         }
         catch (ClassNotFoundException | IOException e) {
             // TODO Handle this exception somehow...

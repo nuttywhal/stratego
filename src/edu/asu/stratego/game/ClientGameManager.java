@@ -5,7 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javafx.application.Platform;
-
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.gui.ConnectionScene;
 
@@ -124,9 +123,14 @@ public class ClientGameManager implements Runnable {
                 Game.setStatus(GameStatus.WAITING_OPP);
                 
                 // Send initial piece positions to server.
-                toServer.writeObject(new SetupBoard());
+                SetupBoard initial = new SetupBoard();
+                initial.getPiecePositions();
+                toServer.writeObject(initial);
+                
+                // Receive opponent's initial piece positions from server.
+                initial = (SetupBoard) fromServer.readObject();
             }
-            catch (InterruptedException | IOException e) {
+            catch (InterruptedException | IOException | ClassNotFoundException e) {
                 // TODO Handle this exception somehow...
             }
         }

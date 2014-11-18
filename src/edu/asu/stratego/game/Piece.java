@@ -1,5 +1,7 @@
 package edu.asu.stratego.game;
 
+import java.io.Serializable;
+
 import javafx.scene.image.Image;
 
 import edu.asu.stratego.media.ImageConstants;
@@ -7,7 +9,10 @@ import edu.asu.stratego.media.ImageConstants;
 /**
  * Represents a single game piece.
  */
-public class Piece {
+public class Piece implements Serializable {
+
+    private static final long serialVersionUID = 7193334048398155856L;
+    
     private PieceColor color;
     private PieceType  type;
     
