@@ -22,6 +22,9 @@ public class BoardScene {
     private final double UNIT = ClientStage.getUnit();
     private final int    SIDE = ClientStage.getSide();
     
+    private static StackPane root       = new StackPane();
+    private static GridPane  setupPanel = new GridPane();
+    
     Scene scene;
     
     /**
@@ -83,7 +86,7 @@ public class BoardScene {
         
         // Create the setup panel.
         new SetupPanel();
-        GridPane setupPanel = SetupPanel.getSetupPanel();
+        setupPanel = SetupPanel.getSetupPanel();
         StackPane.setMargin(setupPanel, new Insets(UNIT, 0, 0, 0));
         StackPane.setAlignment(setupPanel, Pos.TOP_CENTER);
         
@@ -94,12 +97,20 @@ public class BoardScene {
         border.setFitWidth(SIDE);
         
         // Show Board GUI.
-        StackPane root = new StackPane(background, Game.getBoard().getPiecePane(), 
-                                       Game.getBoard().getEventPane(), setupPanel, border);
+        root = new StackPane(background, Game.getBoard().getPiecePane(), 
+                             Game.getBoard().getEventPane(), setupPanel, border);
         root.setMaxSize(SIDE, SIDE);
         Game.getBoard().getPiecePane().setAlignment(Pos.CENTER);
         Game.getBoard().getEventPane().setAlignment(Pos.CENTER);
         
         scene = new Scene(root, SIDE, SIDE);
+    }
+    
+    public static StackPane getRootPane() {
+        return root;
+    }
+    
+    public static GridPane getSetupPanel() {
+        return setupPanel;
     }
 }

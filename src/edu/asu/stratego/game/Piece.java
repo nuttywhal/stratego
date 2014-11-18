@@ -2,10 +2,6 @@ package edu.asu.stratego.game;
 
 import java.io.Serializable;
 
-import javafx.scene.image.Image;
-
-import edu.asu.stratego.media.ImageConstants;
-
 /**
  * Represents a single game piece.
  */
@@ -52,7 +48,7 @@ public class Piece implements Serializable {
                 case BOMB:       this.spriteKey = "RED_BOMB"; break;
                 case FLAG:       this.spriteKey = "RED_FLAG"; break;
                 case SPY:        this.spriteKey = "RED_SPY";  break;
-                default:                                               break;
+                default:                                      break;
             }
             
             if (this.isOpponentPiece)
@@ -73,7 +69,7 @@ public class Piece implements Serializable {
                 case BOMB:       this.spriteKey = "BLUE_BOMB"; break;
                 case FLAG:       this.spriteKey = "BLUE_FLAG"; break;
                 case SPY:        this.spriteKey = "BLUE_SPY";  break;
-                default:                                                break;
+                default:                                       break;
             }
             
             if (this.isOpponentPiece)

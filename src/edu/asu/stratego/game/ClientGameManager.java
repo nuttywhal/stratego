@@ -5,8 +5,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javafx.application.Platform;
+import edu.asu.stratego.game.board.ClientSquare;
+import edu.asu.stratego.gui.BoardScene;
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.gui.ConnectionScene;
+import edu.asu.stratego.util.HashTables;
 
 /**
  * Task to handle the Stratego game on the client-side.
@@ -40,7 +43,7 @@ public class ClientGameManager implements Runnable {
         connectToServer();
         waitForOpponent();
         setupBoard();
-        //playGame();
+        playGame();
     }
     
     /**
@@ -128,11 +131,31 @@ public class ClientGameManager implements Runnable {
                 toServer.writeObject(initial);
                 
                 // Receive opponent's initial piece positions from server.
-                initial = (SetupBoard) fromServer.readObject();
+                final SetupBoard opponentInitial = (SetupBoard) fromServer.readObject();
+                
+                // Place the opponent's pieces on the board.
+                Platform.runLater(() -> {
+                    for (int row = 0; row < 4; ++row) {
+                        for (int col = 0; col < 10; ++col) {
+                            ClientSquare square = Game.getBoard().getSquare(row, col);
+                            square.setPiece(opponentInitial.getPiece(row, col));
+                            square.getPiecePane().setPiece(HashTables.PIECE_MAP
+                                    .get(square.getPiece().getPieceSpriteKey()));
+                        }
+                    }
+                });
             }
             catch (InterruptedException | IOException | ClassNotFoundException e) {
                 // TODO Handle this exception somehow...
             }
         }
+    }
+    
+    private void playGame() {
+        Platform.runLater(() -> {
+            BoardScene.getRootPane().getChildren().remove(BoardScene.getSetupPanel());
+        });
+        
+        
     }
 }

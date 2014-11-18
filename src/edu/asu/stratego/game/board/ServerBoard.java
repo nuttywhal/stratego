@@ -13,6 +13,12 @@ public class ServerBoard {
      */
     public ServerBoard() {
         squares = new ServerSquare[SIZE][SIZE];
+        
+        for (int row = 0; row < SIZE; ++row) {
+            for (int col = 0; col < SIZE; ++col) {
+                squares[row][col] = new ServerSquare();
+            }
+        }
     }
     
     /**

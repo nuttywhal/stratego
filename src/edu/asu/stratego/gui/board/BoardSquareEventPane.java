@@ -158,9 +158,9 @@ public class BoardSquareEventPane extends GridPane {
                     while(pieceType == null) {
                         int randInt = (int) (Math.random() * availTypes.size());
                         if(SetupPieces.getPieceCount(availTypes.get(randInt)) > 0)
-                                pieceType = availTypes.get(randInt);
+                            pieceType = availTypes.get(randInt);
                         else
-                                availTypes.remove(randInt);
+                            availTypes.remove(randInt);
                     }
                    
                     square.setPiece(new Piece(pieceType, playerColor, false));
