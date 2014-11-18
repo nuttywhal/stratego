@@ -11,12 +11,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-
 import edu.asu.stratego.game.Game;
 import edu.asu.stratego.game.PieceType;
 import edu.asu.stratego.gui.ClientStage;
-import edu.asu.stratego.media.ImageConstants;
-import edu.asu.stratego.lang.MutableBoolean;
+
+import edu.asu.stratego.util.HashTables;
+import edu.asu.stratego.util.MutableBoolean;
 
 /**
  * Pieces in the SetupPanel that the player can select when setting up the game.
@@ -72,7 +72,7 @@ public class SetupPieces {
             pieceCount.get(pieceType).setTextFill(new Color(1.0, 1.0, 1.0, 1.0));
 
             // Map the piece type to its corresponding image.
-            pieceImages.put(pieceType, new ImageView(ImageConstants.
+            pieceImages.put(pieceType, new ImageView(HashTables.
                     PIECE_MAP.get(playerColor + "_" + pieceSuffix[i])));
             pieceImages.get(pieceType).setFitHeight(UNIT * 0.8);
             pieceImages.get(pieceType).setFitWidth(UNIT * 0.8);

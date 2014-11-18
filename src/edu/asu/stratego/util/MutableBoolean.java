@@ -1,4 +1,4 @@
-package edu.asu.stratego.lang;
+package edu.asu.stratego.util;
 
 /**
  * A mutable wrapper class for the boolean primitive type.

@@ -18,6 +18,7 @@ import edu.asu.stratego.game.board.ClientSquare;
 import edu.asu.stratego.gui.board.setup.SetupPanel;
 import edu.asu.stratego.gui.board.setup.SetupPieces;
 import edu.asu.stratego.media.ImageConstants;
+import edu.asu.stratego.util.HashTables;
 
 /**
  * A single square within the BoardEventPane.
@@ -118,7 +119,7 @@ public class BoardSquareEventPane extends GridPane {
                     	SetupPieces.decrementPieceCount(selectedPiece);
                     	SetupPieces.incrementPieceCount(squarePiece.getPieceType());
                         square.setPiece(new Piece(selectedPiece, playerColor, false));
-                        squarePane.setPiece(square.getPiece().getPieceSprite());
+                        squarePane.setPiece(HashTables.PIECE_MAP.get(square.getPiece().getPieceSpriteKey()));
                     }
                 }
                 
@@ -127,7 +128,7 @@ public class BoardSquareEventPane extends GridPane {
                 	// Place a new piece on the square.
                     if (selectedPiece != null && selectedPieceCount > 0) {
                         square.setPiece(new Piece(selectedPiece, playerColor, false));
-                        squarePane.setPiece(square.getPiece().getPieceSprite());
+                        squarePane.setPiece(HashTables.PIECE_MAP.get(square.getPiece().getPieceSpriteKey()));
                         SetupPieces.decrementPieceCount(selectedPiece);
                     }
                 }
@@ -163,7 +164,7 @@ public class BoardSquareEventPane extends GridPane {
                     }
                    
                     square.setPiece(new Piece(pieceType, playerColor, false));
-                    squarePane.setPiece(square.getPiece().getPieceSprite());
+                    squarePane.setPiece(HashTables.PIECE_MAP.get(square.getPiece().getPieceSpriteKey()));
                     SetupPieces.decrementPieceCount(pieceType);
                 }
             }
