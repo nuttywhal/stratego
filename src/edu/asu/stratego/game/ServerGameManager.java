@@ -117,19 +117,16 @@ public class ServerGameManager implements Runnable {
                 }
             }
             
-            // Rotate PlayerOne's pieces by 180 degrees.
+            // Rotate pieces by 180 degrees.
             for (int row = 0; row < 2; ++row) {
                 for (int col = 0; col < 10; ++col) {
+                    // Player One
                     Piece temp = setupBoardOne.getPiece(row, col);
-                    setupBoardOne.setPiece(setupBoardOne.getPiece(3 - row, col), row, col);
-                    setupBoardOne.setPiece(temp, 3 - row, col);
-                }
-            }
-            
-            // Rotate PlayerTwo's pieces by 180 degrees.
-            for (int row = 0; row < 2; ++row) {
-                for (int col = 0; col < 10; ++col) {
-                    Piece temp = setupBoardTwo.getPiece(row, col);
+                    setupBoardOne.setPiece(setupBoardOne.getPiece(3 - row, 9 - col), row, col);
+                    setupBoardOne.setPiece(temp, 3 - row, 9 - col);
+                    
+                    // Player Two
+                    temp = setupBoardTwo.getPiece(row, col);
                     setupBoardTwo.setPiece(setupBoardTwo.getPiece(3 - row, 9 - col), row, col);
                     setupBoardTwo.setPiece(temp, 3 - row, 9 - col);
                 }

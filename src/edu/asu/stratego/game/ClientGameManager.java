@@ -9,6 +9,7 @@ import edu.asu.stratego.game.board.ClientSquare;
 import edu.asu.stratego.gui.BoardScene;
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.gui.ConnectionScene;
+import edu.asu.stratego.media.ImageConstants;
 import edu.asu.stratego.util.HashTables;
 
 /**
@@ -139,8 +140,11 @@ public class ClientGameManager implements Runnable {
                         for (int col = 0; col < 10; ++col) {
                             ClientSquare square = Game.getBoard().getSquare(row, col);
                             square.setPiece(opponentInitial.getPiece(row, col));
-                            square.getPiecePane().setPiece(HashTables.PIECE_MAP
-                                    .get(square.getPiece().getPieceSpriteKey()));
+                            
+                            if (Game.getPlayer().getColor() == PieceColor.RED)
+                                square.getPiecePane().setPiece(ImageConstants.BLUE_BACK);
+                            else
+                                square.getPiecePane().setPiece(ImageConstants.RED_BACK);
                         }
                     }
                 });
