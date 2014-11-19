@@ -5,7 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javafx.application.Platform;
-
 import edu.asu.stratego.game.board.ClientSquare;
 import edu.asu.stratego.gui.BoardScene;
 import edu.asu.stratego.gui.ClientStage;
@@ -159,14 +158,21 @@ public class ClientGameManager implements Runnable {
     private void playGame() {
         Platform.runLater(() -> {
             BoardScene.getRootPane().getChildren().remove(BoardScene.getSetupPanel());
-            Game.setStatus(GameStatus.IN_PROGRESS);
         });
         
+        Game.setStatus(GameStatus.IN_PROGRESS);
+        
         while (Game.getStatus() == GameStatus.IN_PROGRESS) {
-            try {
+            try {            	
                 // Get turn color from server.
                 Game.setTurn((PieceColor) fromServer.readObject());
                 
+                // DAVID: If the turn is the client's, set move status to none selected
+            	if(Game.getPlayer().getColor() == Game.getTurn())
+            		Game.setMoveStatus(MoveStatus.NONE_SELECTED);
+            	else
+            		Game.setMoveStatus(MoveStatus.OPP_TURN);
+            		
                 // Notify turn indicator.
                 synchronized (BoardTurnIndicator.getTurnIndicatorTrigger()) {
                     BoardTurnIndicator.getTurnIndicatorTrigger().notify();

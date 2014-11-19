@@ -13,6 +13,9 @@ public class Game {
     private static Player player;
     private static Player opponent;
     
+    private static Move move;
+    private static MoveStatus moveStatus;
+    
     private static GameStatus status;
     private static PieceColor turn;
     private static ClientBoard board;
@@ -23,6 +26,9 @@ public class Game {
     public Game() {
         player   = new Player();
         opponent = new Player();
+        
+        move = new Move();
+        moveStatus = MoveStatus.OPP_TURN;
         
         status = GameStatus.SETTING_UP;
         turn   = PieceColor.RED;
@@ -99,4 +105,20 @@ public class Game {
     public static void setBoard(ClientBoard board) {
         Game.board = board;
     }
+
+	public static Move getMove() {
+		return move;
+	}
+
+	public static void setMove(Move move) {
+		Game.move = move;
+	}
+
+	public static MoveStatus getMoveStatus() {
+		return moveStatus;
+	}
+
+	public static void setMoveStatus(MoveStatus moveStatus) {
+		Game.moveStatus = moveStatus;
+	}
 }

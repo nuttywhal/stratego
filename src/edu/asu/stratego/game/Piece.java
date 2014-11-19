@@ -84,6 +84,10 @@ public class Piece implements Serializable {
         return type;
     }
     
+    public PieceColor getPieceColor() {
+        return color;
+    }
+    
     /**
      * @return the sprite associated with the type of the piece.
      */

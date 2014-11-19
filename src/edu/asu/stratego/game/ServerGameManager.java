@@ -91,7 +91,9 @@ public class ServerGameManager implements Runnable {
             playerOne = (Player) fromPlayerOne.readObject();
             playerTwo = (Player) fromPlayerTwo.readObject();
             
-            if (Math.random() < 0.5) {
+            // screw you Nelson
+            //if (Math.random() < 0.5) {
+            if(Math.random() < 1) {
                 playerOne.setColor(PieceColor.RED);
                 playerTwo.setColor(PieceColor.BLUE);
             }
@@ -136,6 +138,8 @@ public class ServerGameManager implements Runnable {
                     setupBoardTwo.setPiece(temp, 3 - row, 9 - col);
                 }
             }
+            
+            /* Halley's comment */
             
             toPlayerOne.writeObject(setupBoardTwo);
             toPlayerTwo.writeObject(setupBoardOne);

@@ -2,23 +2,30 @@ package edu.asu.stratego.game;
 
 public class Move {
     
-    private int rowStart;
-    private int colStart;
-    private int rowEnd;
-    private int colEnd;
+    private int rowStart = -1;
+    private int colStart = -1;
+    private int rowEnd = -1;
+    private int colEnd = -1;
     
-    /**
-     * Creates a new instance of Move.
-     * 
-     * @param rowStart
-     * @param colStart
-     * @param rowEnd
-     * @param colEnd
-     */
-    public Move(int rowStart, int colStart, int rowEnd, int colEnd) {
-        this.rowStart = rowStart;
-        this.colStart = colStart;
-        this.rowEnd   = rowEnd;
-        this.colEnd   = colEnd;
+    public boolean isPieceSelected() {
+    	return (rowStart != -1 && colStart != -1);
+    }
+    
+    public int getRowStart() {
+    	return rowStart;
+    }
+    
+    public int getColStart() {
+    	return colStart;
+    }
+    
+    public void setStart(int rowStart, int colStart) {
+    	this.rowStart = rowStart;
+    	this.colStart = colStart;
+    }
+    
+    public void setEnd(int rowEnd, int colEnd) {
+    	this.rowEnd = rowEnd;
+    	this.colEnd = colEnd;
     }
 }
