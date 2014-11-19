@@ -9,7 +9,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.util.Duration;
-
 import edu.asu.stratego.game.board.ClientSquare;
 import edu.asu.stratego.gui.BoardScene;
 import edu.asu.stratego.gui.ClientStage;
@@ -173,7 +172,6 @@ public class ClientGameManager implements Runnable {
         
         while (Game.getStatus() == GameStatus.IN_PROGRESS) {
             try {
-                System.out.println("New Turn");
                 
                 // Get turn color from server.
                 Game.setTurn((PieceColor) fromServer.readObject());
@@ -190,65 +188,60 @@ public class ClientGameManager implements Runnable {
                 }
                 
                 // Send move to the server.
-                if (Game.getPlayer().getColor() == Game.getTurn()) {
+                if (Game.getPlayer().getColor() == Game.getTurn() && Game.getMoveStatus() != MoveStatus.SERVER_VALIDATION) {
                     synchronized (sendMove) {
                     	sendMove.wait();
                     	toServer.writeObject(Game.getMove());
+                    	Game.setMoveStatus(MoveStatus.SERVER_VALIDATION);
                     }
-                    
-                    Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y).setPiece(Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiece());
-                    Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).setPiece(null);
-                    
-                    // Update GUI.
-                    Platform.runLater(() -> {
-                        ClientSquare square = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
-                        square.getPiecePane().setPiece(HashTables.PIECE_MAP.get(square.getPiece().getPieceSpriteKey()));
-                        
-                        square = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
-                        
-                        if(Game.getTurn() == PieceColor.RED)
-                        	square.getPiecePane().setPiece(ImageConstants.MOVEARROW_RED);
-                        else
-                        	square.getPiecePane().setPiece(ImageConstants.MOVEARROW_BLUE);
-                        
-                        if(Game.getMove().getStart().x > Game.getMove().getEnd().x) 
-                        	square.getPiecePane().getPiece().setRotate(0);
-                        else if(Game.getMove().getStart().y < Game.getMove().getEnd().y) 
-                        	square.getPiecePane().getPiece().setRotate(90);
-                        else if(Game.getMove().getStart().x < Game.getMove().getEnd().x) 
-                        	square.getPiecePane().getPiece().setRotate(180);
-                        else
-                        	square.getPiecePane().getPiece().setRotate(270);
-                        
-                        FadeTransition ft = new FadeTransition(Duration.millis(1500), square.getPiecePane().getPiece());
-                        ft.setFromValue(1.0);
-                        ft.setToValue(0.0);
-                        ft.play();
-                        ft.setOnFinished(new ResetSquareImage());
-                    });
                 }
                 
                 // Receive move from the server.
-                else {
+                if (true) {
                     Game.setMove((Move) fromServer.readObject());
-                    Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y).setPiece(Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiece());
-                    Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).setPiece(null);
+                    Piece startPiece = Game.getMove().getStartPiece();
+                    Piece endPiece = Game.getMove().getEndPiece();
+                    
+                    Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).setPiece(startPiece);
+                    Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y).setPiece(endPiece);
                     
                     // Update GUI.
                     Platform.runLater(() -> {
-                        ClientSquare square = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
-                        if (Game.getPlayer().getColor() == PieceColor.RED)
-                            square.getPiecePane().setPiece(ImageConstants.BLUE_BACK);
-                        else
-                            square.getPiecePane().setPiece(ImageConstants.RED_BACK);
+                        ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
+                        ClientSquare endSquare = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
                         
-                        square = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
-                        if(Game.getTurn() == PieceColor.RED)
-                        	square.getPiecePane().setPiece(ImageConstants.MOVEARROW_RED);
-                        else
-                        	square.getPiecePane().setPiece(ImageConstants.MOVEARROW_BLUE);
+                        // Most likely (like, 99% sure) only in a draw
+                        if(endPiece == null) 
+                        	endSquare.getPiecePane().setPiece(null);
+                        else{
+                        	if(endPiece.getPieceColor() == Game.getPlayer().getColor()) {
+                            	endSquare.getPiecePane().setPiece(HashTables.PIECE_MAP.get(endPiece.getPieceSpriteKey()));
+                            }
+                            else{
+    	                        if (endPiece.getPieceColor() == PieceColor.BLUE)
+    	                        	endSquare.getPiecePane().setPiece(ImageConstants.BLUE_BACK);
+    	                        else
+    	                        	endSquare.getPiecePane().setPiece(ImageConstants.RED_BACK);
+                            }
+                        }
                         
-                        FadeTransition ft = new FadeTransition(Duration.millis(1500), square.getPiecePane().getPiece());
+                        // Arrow
+                        ClientSquare arrowSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
+                        if(Game.getMove().getMoveColor() == PieceColor.RED)
+                        	arrowSquare.getPiecePane().setPiece(ImageConstants.MOVEARROW_RED);
+                        else
+                        	arrowSquare.getPiecePane().setPiece(ImageConstants.MOVEARROW_BLUE);
+                        
+                        if(Game.getMove().getStart().x > Game.getMove().getEnd().x) 
+                        	arrowSquare.getPiecePane().getPiece().setRotate(0);
+                        else if(Game.getMove().getStart().y < Game.getMove().getEnd().y) 
+                        	arrowSquare.getPiecePane().getPiece().setRotate(90);
+                        else if(Game.getMove().getStart().x < Game.getMove().getEnd().x) 
+                        	arrowSquare.getPiecePane().getPiece().setRotate(180);
+                        else
+                        	arrowSquare.getPiecePane().getPiece().setRotate(270);
+                        
+                        FadeTransition ft = new FadeTransition(Duration.millis(1500), arrowSquare.getPiecePane().getPiece());
                         ft.setFromValue(1.0);
                         ft.setToValue(0.0);
                         ft.play();

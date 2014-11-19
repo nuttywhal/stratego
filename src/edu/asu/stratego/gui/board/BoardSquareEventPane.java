@@ -212,6 +212,7 @@ public class BoardSquareEventPane extends GridPane {
                     }
                     
             		Game.getMove().setEnd(row, col);
+            		Game.getMove().setMoveColor(Game.getPlayer().getColor());
             		Game.setMoveStatus(MoveStatus.END_SELECTED);
             		
             		synchronized (ClientGameManager.getSendMove()) {

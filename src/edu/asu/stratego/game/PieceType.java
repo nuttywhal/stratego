@@ -57,6 +57,11 @@ public enum PieceType {
         // Defender is a spy.
         else if (defender == PieceType.SPY)
             return BattleOutcome.WIN;
+
+        // Defender is Marshal (10) and Attacker is Spy
+        else if(defender == PieceType.MARSHAL && this == PieceType.SPY) {
+        	return BattleOutcome.WIN;
+        }
         
         // Defender is a bomb.
         else if (defender == PieceType.BOMB) {
