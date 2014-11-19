@@ -18,6 +18,7 @@ import edu.asu.stratego.media.ImageConstants;
 public class ClientGameManager implements Runnable {
     
     private static Object setupPieces = new Object();
+    private static Object sendMove    = new Object();
     
     private ObjectOutputStream toServer;
     private ObjectInputStream  fromServer;
@@ -180,7 +181,10 @@ public class ClientGameManager implements Runnable {
                 
                 
                 if (Game.getPlayer().getColor() == Game.getTurn()) {
-                    // TODO Player move.
+                    synchronized (sendMove) {
+                    	sendMove.wait();
+                    	toServer.writeObject(Game.getMove());
+                    }
                 }
                 else {
                     // TODO Wait opponent move.
@@ -188,10 +192,14 @@ public class ClientGameManager implements Runnable {
                 
                 // Get game status from server.
             } 
-            catch (ClassNotFoundException | IOException e) {
+            catch (ClassNotFoundException | IOException | InterruptedException e) {
                 // TODO Handle this exception somehow...
                 e.printStackTrace();
             }
         }
     }
+
+	public static Object getSendMove() {
+		return sendMove;
+	}
 }

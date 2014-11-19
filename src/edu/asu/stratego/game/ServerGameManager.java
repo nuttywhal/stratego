@@ -163,12 +163,17 @@ public class ServerGameManager implements Runnable {
                 toPlayerTwo.writeObject(turn);
                 
                 // Get turn from client.
+                if (playerOne.getColor() == turn)
+                	move = (Move) fromPlayerOne.readObject();
+                else
+                	move = (Move) fromPlayerTwo.readObject();
                 
+                System.out.println("Point received: " + move);
                 
                 // Check valid move.
                 // Check win conditions.
             }
-            catch (IOException e) {
+            catch (IOException | ClassNotFoundException e) {
                 // TODO Handle this exception somehow...
                 e.printStackTrace();
             }

@@ -1,8 +1,12 @@
 package edu.asu.stratego.game;
 
-public class Move {
-    
-    private int rowStart = -1;
+import java.io.Serializable;
+
+public class Move implements Serializable {
+
+	private static final long serialVersionUID = -8315478849105334331L;
+	
+	private int rowStart = -1;
     private int colStart = -1;
     private int rowEnd = -1;
     private int colEnd = -1;

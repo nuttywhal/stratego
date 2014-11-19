@@ -12,7 +12,7 @@ import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-
+import edu.asu.stratego.game.ClientGameManager;
 import edu.asu.stratego.game.Game;
 import edu.asu.stratego.game.GameStatus;
 import edu.asu.stratego.game.MoveStatus;
@@ -30,7 +30,7 @@ import edu.asu.stratego.util.HashTables;
  */
 public class BoardSquareEventPane extends GridPane {
     
-    private ArrayList<Point> validMoves;
+    private static ArrayList<Point> validMoves;
     private ImageView hover;
     
     /**
@@ -202,8 +202,25 @@ public class BoardSquareEventPane extends GridPane {
                 		displayValidMoves(row, col);
         			}
             	}
+            	else if(Game.getMoveStatus() == MoveStatus.START_SELECTED && isValidMove(row, col)) {
+            		Game.getMove().setEnd(row, col);
+            		
+            		synchronized (ClientGameManager.getSendMove()) {
+            			ClientGameManager.getSendMove().notify();
+            		}
+            	}
             }
         }
+    }
+    
+    public boolean isValidMove(int row, int col) {
+    	if(validMoves != null && validMoves.size() > 0) {
+    		for(int i = 0; i < validMoves.size(); i++) {
+    			if(row == validMoves.get(i).getX() && col == validMoves.get(i).getY()) 
+    				return true;
+    		}
+    	}
+    	return false;
     }
     
     private void displayValidMoves(int pieceRow, int pieceCol) {
@@ -296,9 +313,6 @@ public class BoardSquareEventPane extends GridPane {
 	    	}
     	}
     	
-    	for(int j = 0; j < validMoves.size(); j++) {
-    		System.out.println(validMoves.get(j));
-    	}
     	return validMoves;
     }
     
