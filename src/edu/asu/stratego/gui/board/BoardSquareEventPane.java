@@ -1,4 +1,4 @@
-// Gorgon class. For the love of Zeus, don't look at it!
+/* Gorgon class. For the love of Zeus, don't look at it! */
 
 package edu.asu.stratego.gui.board;
 
@@ -12,14 +12,13 @@ import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+
 import edu.asu.stratego.game.Game;
 import edu.asu.stratego.game.GameStatus;
-import edu.asu.stratego.game.Move;
 import edu.asu.stratego.game.MoveStatus;
 import edu.asu.stratego.game.Piece;
 import edu.asu.stratego.game.PieceColor;
 import edu.asu.stratego.game.PieceType;
-import edu.asu.stratego.game.board.ClientBoard;
 import edu.asu.stratego.game.board.ClientSquare;
 import edu.asu.stratego.gui.board.setup.SetupPanel;
 import edu.asu.stratego.gui.board.setup.SetupPieces;
@@ -31,6 +30,7 @@ import edu.asu.stratego.util.HashTables;
  */
 public class BoardSquareEventPane extends GridPane {
     
+    private ArrayList<Point> validMoves;
     private ImageView hover;
     
     /**
@@ -188,30 +188,44 @@ public class BoardSquareEventPane extends GridPane {
             	if(Game.getMoveStatus() == MoveStatus.NONE_SELECTED && isHoverValid(row, col)) {
             		Game.getMove().setStart(row, col);
             		Game.setMoveStatus(MoveStatus.START_SELECTED);
-            		source.setImage(ImageConstants.HIGHLIGHT_WHITE);
-            		squarePane.getPiece().setEffect(new Glow(0.5));
             		
-            		computeValidMoves(row, col);
+            		validMoves = computeValidMoves(row, col);
+            		displayValidMoves(row, col);
             	}
             	// If a start piece has already been selected, but user is changing start piece
             	else if(Game.getMoveStatus() == MoveStatus.START_SELECTED && !isNullPiece(row, col)) {
         			Piece highlightPiece = Game.getBoard().getSquare(row, col).getPiece();
         			if(highlightPiece.getPieceColor() == playerColor) {
-        				Game.getBoard().getSquare(Game.getMove().getRowStart(),Game.getMove().getColStart()).getPiecePane().getPiece().setEffect(new Glow(0));        				
-        				Game.getBoard().getSquare(Game.getMove().getRowStart(),Game.getMove().getColStart()).getEventPane().getHover().setImage(ImageConstants.HIGHLIGHT_NONE);
-        				
-        				source.setImage(ImageConstants.HIGHLIGHT_WHITE);
-        				squarePane.getPiece().setEffect(new Glow(0.5));
                 		Game.getMove().setStart(row, col);
                 		
-                		computeValidMoves(row, col);
+                		validMoves = computeValidMoves(row, col);
+                		displayValidMoves(row, col);
         			}
             	}
             }
         }
     }
     
-    private static ArrayList<Point> computeValidMoves(int row, int col) {
+    private void displayValidMoves(int pieceRow, int pieceCol) {
+        for (int row = 0; row < 10; ++row) {
+            for (int col = 0; col < 10; ++col) {
+                Game.getBoard().getSquare(row, col).getEventPane().getHover().setImage(ImageConstants.HIGHLIGHT_NONE);
+                Game.getBoard().getSquare(row, col).getEventPane().getHover().setOpacity(1.0);
+                Game.getBoard().getSquare(row, col).getPiecePane().getPiece().setEffect(new Glow(0.0));                      
+            }
+        }
+
+        Game.getBoard().getSquare(pieceRow,pieceCol).getPiecePane().getPiece().setEffect(new Glow(0.75));                      
+        Game.getBoard().getSquare(pieceRow,pieceCol).getEventPane().getHover().setImage(ImageConstants.HIGHLIGHT_WHITE);
+
+        
+        for (Point validMove : validMoves) {
+            Game.getBoard().getSquare((int) validMove.getX(), (int) validMove.getY()).getEventPane().getHover().setImage(ImageConstants.HIGHLIGHT_VALID);
+            Game.getBoard().getSquare((int) validMove.getX(), (int) validMove.getY()).getEventPane().getHover().setOpacity(0.5);
+        }
+    }
+    
+    private ArrayList<Point> computeValidMoves(int row, int col) {
     	int max = 1;
     	PieceType pieceType = Game.getBoard().getSquare(row, col).getPiece().getPieceType();
     	if(pieceType == PieceType.SCOUT)
@@ -229,6 +243,8 @@ public class BoardSquareEventPane extends GridPane {
 	    				if(!isNullPiece(row+i, col) && isOpponentPiece(row+i, col))
 	    					break;
 	    			}
+	    			else
+	    			    break;
 	    		}
 	    		else
 	    			break;
@@ -242,6 +258,8 @@ public class BoardSquareEventPane extends GridPane {
 	    				if(!isNullPiece(row, col+i) && isOpponentPiece(row, col+i))
 	    					break;
 	    			}
+	    			else
+                        break;
 	    		}
 	    		else
 	    			break;
@@ -255,6 +273,8 @@ public class BoardSquareEventPane extends GridPane {
 	    				if(!isNullPiece(row+i, col) && isOpponentPiece(row+i, col))
 	    					break;
 	    			}
+	    			else
+                        break;
 	    		}
 	    		else
 	    			break;
@@ -268,6 +288,8 @@ public class BoardSquareEventPane extends GridPane {
 	    				if(!isNullPiece(row, col+i) && isOpponentPiece(row, col+i))
 	    					break;
 	    			}
+	    			else
+                        break;
 	    		}
 	    		else
 	    			break;
