@@ -202,7 +202,14 @@ public class BoardSquareEventPane extends GridPane {
                 		displayValidMoves(row, col);
         			}
             	}
-            	else if(Game.getMoveStatus() == MoveStatus.START_SELECTED && isValidMove(row, col)) {
+            	if(Game.getMoveStatus() == MoveStatus.START_SELECTED && isValidMove(row, col)) {
+                    for (int rowClear = 0; rowClear < 10; ++rowClear) {
+                        for (int colClear = 0; colClear < 10; ++colClear) {
+                            Game.getBoard().getSquare(rowClear, colClear).getEventPane().getHover().setImage(ImageConstants.HIGHLIGHT_NONE);
+                            Game.getBoard().getSquare(rowClear, colClear).getEventPane().getHover().setOpacity(1.0);
+                        }
+                    }
+                    
             		Game.getMove().setEnd(row, col);
             		Game.setMoveStatus(MoveStatus.END_SELECTED);
             		

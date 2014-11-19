@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.util.Duration;
 import edu.asu.stratego.game.board.ClientSquare;
 import edu.asu.stratego.gui.BoardScene;
 import edu.asu.stratego.gui.ClientStage;
@@ -199,7 +201,25 @@ public class ClientGameManager implements Runnable {
                         square.getPiecePane().setPiece(HashTables.PIECE_MAP.get(square.getPiece().getPieceSpriteKey()));
                         
                         square = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
-                        square.getPiecePane().setPiece(null);
+                        
+                        if(Game.getTurn() == PieceColor.RED)
+                        	square.getPiecePane().setPiece(ImageConstants.MOVEARROW_RED);
+                        else
+                        	square.getPiecePane().setPiece(ImageConstants.MOVEARROW_BLUE);
+                        
+                        if(Game.getMove().getStart().x > Game.getMove().getEnd().x) 
+                        	square.getPiecePane().getPiece().setRotate(0);
+                        else if(Game.getMove().getStart().y < Game.getMove().getEnd().y) 
+                        	square.getPiecePane().getPiece().setRotate(90);
+                        else if(Game.getMove().getStart().x < Game.getMove().getEnd().x) 
+                        	square.getPiecePane().getPiece().setRotate(180);
+                        else
+                        	square.getPiecePane().getPiece().setRotate(270);
+                        
+                        FadeTransition ft = new FadeTransition(Duration.millis(3000), square.getPiecePane().getPiece());
+                        ft.setFromValue(1.0);
+                        ft.setToValue(0.0);
+                        ft.play();
                     });
                 }
                 
@@ -218,7 +238,15 @@ public class ClientGameManager implements Runnable {
                             square.getPiecePane().setPiece(ImageConstants.RED_BACK);
                         
                         square = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
-                        square.getPiecePane().setPiece(null);
+                        if(Game.getTurn() == PieceColor.RED)
+                        	square.getPiecePane().setPiece(ImageConstants.MOVEARROW_RED);
+                        else
+                        	square.getPiecePane().setPiece(ImageConstants.MOVEARROW_BLUE);
+                        
+                        FadeTransition ft = new FadeTransition(Duration.millis(3000), square.getPiecePane().getPiece());
+                        ft.setFromValue(1.0);
+                        ft.setToValue(0.0);
+                        ft.play();
                     });
                 }
                 
