@@ -6,7 +6,10 @@ import java.io.ObjectOutputStream;
 
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.util.Duration;
+
 import edu.asu.stratego.game.board.ClientSquare;
 import edu.asu.stratego.gui.BoardScene;
 import edu.asu.stratego.gui.ClientStage;
@@ -23,6 +26,7 @@ public class ClientGameManager implements Runnable {
     private static Object setupPieces = new Object();
     private static Object sendMove    = new Object();
     private static Object receiveMove = new Object();
+    private static Object waitFade    = new Object();
     
     private ObjectOutputStream toServer;
     private ObjectInputStream  fromServer;
@@ -216,10 +220,11 @@ public class ClientGameManager implements Runnable {
                         else
                         	square.getPiecePane().getPiece().setRotate(270);
                         
-                        FadeTransition ft = new FadeTransition(Duration.millis(3000), square.getPiecePane().getPiece());
+                        FadeTransition ft = new FadeTransition(Duration.millis(1500), square.getPiecePane().getPiece());
                         ft.setFromValue(1.0);
                         ft.setToValue(0.0);
                         ft.play();
+                        ft.setOnFinished(new ResetSquareImage());
                     });
                 }
                 
@@ -243,15 +248,19 @@ public class ClientGameManager implements Runnable {
                         else
                         	square.getPiecePane().setPiece(ImageConstants.MOVEARROW_BLUE);
                         
-                        FadeTransition ft = new FadeTransition(Duration.millis(3000), square.getPiecePane().getPiece());
+                        FadeTransition ft = new FadeTransition(Duration.millis(1500), square.getPiecePane().getPiece());
                         ft.setFromValue(1.0);
                         ft.setToValue(0.0);
                         ft.play();
+                        ft.setOnFinished(new ResetSquareImage());
                     });
                 }
                 
+                // Wait for fade animation to complete before continuing.
+                synchronized (waitFade) { waitFade.wait(); }
+                
                 // Get game status from server.
-            } 
+            }
             catch (ClassNotFoundException | IOException | InterruptedException e) {
                 // TODO Handle this exception somehow...
                 e.printStackTrace();
@@ -265,5 +274,17 @@ public class ClientGameManager implements Runnable {
 
     public static Object getReceiveMove() {
         return receiveMove;
+    }
+    
+    private class ResetSquareImage implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            synchronized (waitFade) {
+                waitFade.notify();
+                Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiecePane().getPiece().setOpacity(1.0);
+                Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiecePane().getPiece().setRotate(0.0);
+                Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiecePane().setPiece(null);
+            }
+        }
     }
 }

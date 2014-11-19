@@ -200,8 +200,8 @@ public class ServerGameManager implements Runnable {
                 // Check win conditions.
             }
             catch (IOException | ClassNotFoundException e) {
-                // TODO Handle this exception somehow...
-                e.printStackTrace();
+                System.out.println(session + "Error occured during network I/O");
+                return;
             }
         }
     }
