@@ -5,8 +5,8 @@ import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-
 import edu.asu.stratego.game.Game;
+import edu.asu.stratego.game.GameStatus;
 import edu.asu.stratego.game.PieceColor;
 import edu.asu.stratego.gui.ClientStage;
 
@@ -62,26 +62,28 @@ public class BoardTurnIndicator {
         public void run() {
             synchronized (turnIndicatorTrigger) {
                 try {
-                    // Wait for player turn color to change.
-                    turnIndicatorTrigger.wait();
-                    
-                    Platform.runLater(() -> {
-                        // Blue -> Red.
-                        if (Game.getTurn() == PieceColor.RED && 
-                                BoardTurnIndicator.getTurnIndicator().getFill() != red) {
-                            FillTransition ft = new FillTransition(Duration.millis(2000), 
-                                    BoardTurnIndicator.getTurnIndicator(), blue, red);
-                            ft.play();
-                        }
+                    while (true) {
+                        // Wait for player turn color to change.
+                        turnIndicatorTrigger.wait();
                         
-                        // Red -> Blue.
-                        else if (Game.getTurn() == PieceColor.BLUE && 
-                                BoardTurnIndicator.getTurnIndicator().getFill() != blue) {
-                            FillTransition ft = new FillTransition(Duration.millis(3000), 
-                                    BoardTurnIndicator.getTurnIndicator(), red, blue);
-                            ft.play();
-                        }
-                    });
+                        Platform.runLater(() -> {
+                            // Blue -> Red.
+                            if (Game.getTurn() == PieceColor.RED && 
+                                    BoardTurnIndicator.getTurnIndicator().getFill() != red) {
+                                FillTransition ft = new FillTransition(Duration.millis(2000), 
+                                        BoardTurnIndicator.getTurnIndicator(), blue, red);
+                                ft.play();
+                            }
+                            
+                            // Red -> Blue.
+                            else if (Game.getTurn() == PieceColor.BLUE && 
+                                    BoardTurnIndicator.getTurnIndicator().getFill() != blue) {
+                                FillTransition ft = new FillTransition(Duration.millis(3000), 
+                                        BoardTurnIndicator.getTurnIndicator(), red, blue);
+                                ft.play();
+                            }
+                        });
+                    }
                 }
                 catch (InterruptedException e) {
                     // TODO Handle this exception somehow...

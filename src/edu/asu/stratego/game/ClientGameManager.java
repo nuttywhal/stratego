@@ -11,6 +11,7 @@ import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.gui.ConnectionScene;
 import edu.asu.stratego.gui.board.BoardTurnIndicator;
 import edu.asu.stratego.media.ImageConstants;
+import edu.asu.stratego.util.HashTables;
 
 /**
  * Task to handle the Stratego game on the client-side.
@@ -19,6 +20,7 @@ public class ClientGameManager implements Runnable {
     
     private static Object setupPieces = new Object();
     private static Object sendMove    = new Object();
+    private static Object receiveMove = new Object();
     
     private ObjectOutputStream toServer;
     private ObjectInputStream  fromServer;
@@ -164,7 +166,9 @@ public class ClientGameManager implements Runnable {
         Game.setStatus(GameStatus.IN_PROGRESS);
         
         while (Game.getStatus() == GameStatus.IN_PROGRESS) {
-            try {            	
+            try {
+                System.out.println("New Turn");
+                
                 // Get turn color from server.
                 Game.setTurn((PieceColor) fromServer.readObject());
                 
@@ -179,15 +183,43 @@ public class ClientGameManager implements Runnable {
                     BoardTurnIndicator.getTurnIndicatorTrigger().notify();
                 }
                 
-                
+                // Send move to the server.
                 if (Game.getPlayer().getColor() == Game.getTurn()) {
                     synchronized (sendMove) {
                     	sendMove.wait();
                     	toServer.writeObject(Game.getMove());
                     }
+                    
+                    Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y).setPiece(Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiece());
+                    Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).setPiece(null);
+                    
+                    // Update GUI.
+                    Platform.runLater(() -> {
+                        ClientSquare square = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
+                        square.getPiecePane().setPiece(HashTables.PIECE_MAP.get(square.getPiece().getPieceSpriteKey()));
+                        
+                        square = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
+                        square.getPiecePane().setPiece(null);
+                    });
                 }
+                
+                // Receive move from the server.
                 else {
-                    // TODO Wait opponent move.
+                    Game.setMove((Move) fromServer.readObject());
+                    Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y).setPiece(Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiece());
+                    Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).setPiece(null);
+                    
+                    // Update GUI.
+                    Platform.runLater(() -> {
+                        ClientSquare square = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
+                        if (Game.getPlayer().getColor() == PieceColor.RED)
+                            square.getPiecePane().setPiece(ImageConstants.BLUE_BACK);
+                        else
+                            square.getPiecePane().setPiece(ImageConstants.RED_BACK);
+                        
+                        square = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
+                        square.getPiecePane().setPiece(null);
+                    });
                 }
                 
                 // Get game status from server.
@@ -202,4 +234,8 @@ public class ClientGameManager implements Runnable {
 	public static Object getSendMove() {
 		return sendMove;
 	}
+
+    public static Object getReceiveMove() {
+        return receiveMove;
+    }
 }

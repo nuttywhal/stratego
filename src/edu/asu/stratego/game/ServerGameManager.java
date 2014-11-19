@@ -154,10 +154,8 @@ public class ServerGameManager implements Runnable {
     private void playGame() {
         // TODO Implement method to check for legal moves.
         
-//        while () {
+        while (true) {
             try {
-                System.out.println("Inside playGame()");
-                
                 // Send player turn color to clients.
                 toPlayerOne.writeObject(turn);
                 toPlayerTwo.writeObject(turn);
@@ -168,15 +166,43 @@ public class ServerGameManager implements Runnable {
                 else
                 	move = (Move) fromPlayerTwo.readObject();
                 
-                System.out.println("Point received: " + move);
-                
                 // Check valid move.
+                // TODO Implement valid move.
+                
+                // Register move on the board.
+                if (playerOne.getColor() == turn) {
+                    board.getSquare(9 - move.getEnd().x, 9 - move.getEnd().y).setPiece(board.getSquare(move.getStart().x, move.getStart().y).getPiece());
+                    board.getSquare(9 - move.getStart().x, 9 - move.getStart().y).setPiece(null);
+                }
+                else {
+                    board.getSquare(move.getEnd().x, move.getEnd().y).setPiece(board.getSquare(move.getStart().x, move.getStart().y).getPiece());
+                    board.getSquare(move.getStart().x, move.getStart().y).setPiece(null);
+                }
+                
+                // Rotate the move 180 degrees before sending.
+                move.getStart().x = 9 - move.getStart().x;
+                move.getStart().y = 9 - move.getStart().y;
+                move.getEnd().x   = 9 - move.getEnd().x;
+                move.getEnd().y   = 9 - move.getEnd().y;
+                
+                // Send move to other client.
+                if (playerOne.getColor() == turn)
+                    toPlayerTwo.writeObject(move);
+                else
+                    toPlayerOne.writeObject(move);
+                
+                // Change turn color.
+                if (turn == PieceColor.RED)
+                    turn = PieceColor.BLUE;
+                else
+                    turn = PieceColor.RED;
+                
                 // Check win conditions.
             }
             catch (IOException | ClassNotFoundException e) {
                 // TODO Handle this exception somehow...
                 e.printStackTrace();
             }
-//        }
+        }
     }
 }

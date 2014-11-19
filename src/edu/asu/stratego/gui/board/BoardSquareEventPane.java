@@ -204,6 +204,7 @@ public class BoardSquareEventPane extends GridPane {
             	}
             	else if(Game.getMoveStatus() == MoveStatus.START_SELECTED && isValidMove(row, col)) {
             		Game.getMove().setEnd(row, col);
+            		Game.setMoveStatus(MoveStatus.END_SELECTED);
             		
             		synchronized (ClientGameManager.getSendMove()) {
             			ClientGameManager.getSendMove().notify();
