@@ -15,6 +15,16 @@ public class Move implements Serializable {
     private Piece startPiece;
     private Piece endPiece;
     
+    private boolean isAttack;
+    
+    public boolean isAttackMove() {
+    	return isAttack;
+    }
+    
+    public void setAttackMove(boolean bool) {
+    	isAttack = bool;
+    }
+    
     public boolean isPieceSelected() {
     	return (start.x != -1 && start.y != -1);
     }

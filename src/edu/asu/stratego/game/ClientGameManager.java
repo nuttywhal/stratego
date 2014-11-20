@@ -209,6 +209,27 @@ public class ClientGameManager implements Runnable {
                     Piece startPiece = Game.getMove().getStartPiece();
                     Piece endPiece = Game.getMove().getEndPiece();
                     
+                    if(Game.getMove().isAttackMove() == false) {
+	                    
+                	} else {
+                		Platform.runLater(() -> {
+                			try {	
+		                        ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
+		                        ClientSquare endSquare = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
+		                        
+		                        Piece animStartPiece = startSquare.getPiece();
+		                        Piece animEndPiece = endSquare.getPiece();
+		                        
+	                            startSquare.getPiecePane().setPiece(HashTables.PIECE_MAP.get(animStartPiece.getPieceSpriteKey()));
+	                            endSquare.getPiecePane().setPiece(HashTables.PIECE_MAP.get(animEndPiece.getPieceSpriteKey()));
+                			}
+							catch (Exception e) {
+								// TODO Handle this somehow...
+								e.printStackTrace();
+							}
+                		});
+                	}
+                    
                     Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).setPiece(startPiece);
                     Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y).setPiece(endPiece);
                     

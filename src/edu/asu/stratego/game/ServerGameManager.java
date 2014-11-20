@@ -212,6 +212,9 @@ public class ServerGameManager implements Runnable {
 
                 	BattleOutcome outcome = attackingPiece.getPieceType().attack(defendingPiece.getPieceType());
                 	
+                	moveToPlayerOne.setAttackMove(true);
+                	moveToPlayerTwo.setAttackMove(true);
+                	
                 	if(outcome == BattleOutcome.WIN) {
                         board.getSquare(move.getEnd().x, move.getEnd().y).setPiece(board.getSquare(move.getStart().x, move.getStart().y).getPiece());
                         board.getSquare(move.getStart().x, move.getStart().y).setPiece(null);
