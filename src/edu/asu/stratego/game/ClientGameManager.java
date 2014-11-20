@@ -204,78 +204,77 @@ public class ClientGameManager implements Runnable {
                 }
                 
                 // Receive move from the server.
-                if (true) {
-                    Game.setMove((Move) fromServer.readObject());
-                    Piece startPiece = Game.getMove().getStartPiece();
-                    Piece endPiece = Game.getMove().getEndPiece();
+                Game.setMove((Move) fromServer.readObject());
+                Piece startPiece = Game.getMove().getStartPiece();
+                Piece endPiece = Game.getMove().getEndPiece();
+                
+                if(Game.getMove().isAttackMove() == true) {
+            		Platform.runLater(() -> {
+            			try {
+	                        ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
+	                        ClientSquare endSquare = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
+	                        
+	                        Piece animStartPiece = startSquare.getPiece();
+	                        Piece animEndPiece = endSquare.getPiece();
+	                        
+                            startSquare.getPiecePane().setPiece(HashTables.PIECE_MAP.get(animStartPiece.getPieceSpriteKey()));
+                            endSquare.getPiecePane().setPiece(HashTables.PIECE_MAP.get(animEndPiece.getPieceSpriteKey()));
+            			}
+						catch (Exception e) {
+							// TODO Handle this somehow...
+							e.printStackTrace();
+						}
+            		});
+            		
+            		Thread.sleep(3000);
+            		
+            	}
+                
+                Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).setPiece(startPiece);
+                Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y).setPiece(endPiece);
+                
+                // Update GUI.
+                Platform.runLater(() -> {
+                    ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
+                    ClientSquare endSquare = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
                     
-                    if(Game.getMove().isAttackMove() == false) {
-	                    
-                	} else {
-                		Platform.runLater(() -> {
-                			try {	
-		                        ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
-		                        ClientSquare endSquare = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
-		                        
-		                        Piece animStartPiece = startSquare.getPiece();
-		                        Piece animEndPiece = endSquare.getPiece();
-		                        
-	                            startSquare.getPiecePane().setPiece(HashTables.PIECE_MAP.get(animStartPiece.getPieceSpriteKey()));
-	                            endSquare.getPiecePane().setPiece(HashTables.PIECE_MAP.get(animEndPiece.getPieceSpriteKey()));
-                			}
-							catch (Exception e) {
-								// TODO Handle this somehow...
-								e.printStackTrace();
-							}
-                		});
-                	}
-                    
-                    Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).setPiece(startPiece);
-                    Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y).setPiece(endPiece);
-                    
-                    // Update GUI.
-                    Platform.runLater(() -> {
-                        ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
-                        ClientSquare endSquare = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
-                        
-                        // Most likely (like, 99% sure) only in a draw
-                        if(endPiece == null) 
-                        	endSquare.getPiecePane().setPiece(null);
-                        else{
-                        	if(endPiece.getPieceColor() == Game.getPlayer().getColor()) {
-                            	endSquare.getPiecePane().setPiece(HashTables.PIECE_MAP.get(endPiece.getPieceSpriteKey()));
-                            }
-                            else{
-    	                        if (endPiece.getPieceColor() == PieceColor.BLUE)
-    	                        	endSquare.getPiecePane().setPiece(ImageConstants.BLUE_BACK);
-    	                        else
-    	                        	endSquare.getPiecePane().setPiece(ImageConstants.RED_BACK);
-                            }
+                    // Most likely (like, 99% sure) only in a draw
+                    if(endPiece == null) 
+                    	endSquare.getPiecePane().setPiece(null);
+                    else{
+                    	if(endPiece.getPieceColor() == Game.getPlayer().getColor()) {
+                        	endSquare.getPiecePane().setPiece(HashTables.PIECE_MAP.get(endPiece.getPieceSpriteKey()));
                         }
-                        
-                        // Arrow
-                        ClientSquare arrowSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
-                        if(Game.getMove().getMoveColor() == PieceColor.RED)
-                        	arrowSquare.getPiecePane().setPiece(ImageConstants.MOVEARROW_RED);
-                        else
-                        	arrowSquare.getPiecePane().setPiece(ImageConstants.MOVEARROW_BLUE);
-                        
-                        if(Game.getMove().getStart().x > Game.getMove().getEnd().x) 
-                        	arrowSquare.getPiecePane().getPiece().setRotate(0);
-                        else if(Game.getMove().getStart().y < Game.getMove().getEnd().y) 
-                        	arrowSquare.getPiecePane().getPiece().setRotate(90);
-                        else if(Game.getMove().getStart().x < Game.getMove().getEnd().x) 
-                        	arrowSquare.getPiecePane().getPiece().setRotate(180);
-                        else
-                        	arrowSquare.getPiecePane().getPiece().setRotate(270);
-                        
-                        FadeTransition ft = new FadeTransition(Duration.millis(1500), arrowSquare.getPiecePane().getPiece());
-                        ft.setFromValue(1.0);
-                        ft.setToValue(0.0);
-                        ft.play();
-                        ft.setOnFinished(new ResetSquareImage());
-                    });
-                }
+                        else{
+	                        if (endPiece.getPieceColor() == PieceColor.BLUE)
+	                        	endSquare.getPiecePane().setPiece(ImageConstants.BLUE_BACK);
+	                        else
+	                        	endSquare.getPiecePane().setPiece(ImageConstants.RED_BACK);
+                        }
+                    }
+                    
+                    // Arrow
+                    ClientSquare arrowSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
+                    if(Game.getMove().getMoveColor() == PieceColor.RED)
+                    	arrowSquare.getPiecePane().setPiece(ImageConstants.MOVEARROW_RED);
+                    else
+                    	arrowSquare.getPiecePane().setPiece(ImageConstants.MOVEARROW_BLUE);
+                    
+                    if(Game.getMove().getStart().x > Game.getMove().getEnd().x) 
+                    	arrowSquare.getPiecePane().getPiece().setRotate(0);
+                    else if(Game.getMove().getStart().y < Game.getMove().getEnd().y) 
+                    	arrowSquare.getPiecePane().getPiece().setRotate(90);
+                    else if(Game.getMove().getStart().x < Game.getMove().getEnd().x) 
+                    	arrowSquare.getPiecePane().getPiece().setRotate(180);
+                    else
+                    	arrowSquare.getPiecePane().getPiece().setRotate(270);
+                    
+                    FadeTransition ft = new FadeTransition(Duration.millis(1500), arrowSquare.getPiecePane().getPiece());
+                    ft.setFromValue(1.0);
+                    ft.setToValue(0.0);
+                    ft.play();
+                    ft.setOnFinished(new ResetSquareImage());
+                });
                 
                 // Wait for fade animation to complete before continuing.
                 synchronized (waitFade) { waitFade.wait(); }
@@ -288,6 +287,7 @@ public class ClientGameManager implements Runnable {
                 e.printStackTrace();
             }
         }
+        
         revealAll();
     }
 
