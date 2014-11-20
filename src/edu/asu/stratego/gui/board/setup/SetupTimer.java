@@ -20,7 +20,7 @@ import edu.asu.stratego.gui.board.BoardSquareEventPane;
  * A setup timer. This timer counts down from a start time.
  */
 public class SetupTimer {
-    private static final int START_TIME = 3;  // Madness? THIS IS SPARTA!
+    private static final int START_TIME = 20;  // Madness? THIS IS SPARTA!
     private Timeline timeline;
     private Label timerLabel = new Label();
     private IntegerProperty secondsLeft = 

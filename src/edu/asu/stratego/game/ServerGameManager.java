@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import edu.asu.stratego.game.board.ServerBoard;
 
@@ -24,6 +25,9 @@ public class ServerGameManager implements Runnable {
     
     private Player playerOne = new Player();
     private Player playerTwo = new Player();
+    
+    private Point playerOneFlag;
+    private Point playerTwoFlag;
     
     private PieceColor turn;
     private Move move;
@@ -122,6 +126,11 @@ public class ServerGameManager implements Runnable {
                 for (int col = 0; col < 10; ++col) {
                     board.getSquare(row, col).setPiece(setupBoardOne.getPiece(3 - row, 9 - col));
                     board.getSquare(row + 6, col).setPiece(setupBoardTwo.getPiece(row, col));
+                    
+                    if(setupBoardOne.getPiece(3 - row, 9 - col).getPieceType() == PieceType.FLAG)
+                    	playerOneFlag = new Point(row, col);
+                    if(setupBoardTwo.getPiece(row, col).getPieceType() == PieceType.FLAG)
+                    	playerTwoFlag = new Point(row + 6, col);
                 }
             }
             
@@ -140,8 +149,13 @@ public class ServerGameManager implements Runnable {
                 }
             }
             
+            GameStatus winCondition = checkWinCondition();
+            
             toPlayerOne.writeObject(setupBoardTwo);
             toPlayerTwo.writeObject(setupBoardOne);
+            
+            toPlayerOne.writeObject(winCondition);
+            toPlayerTwo.writeObject(winCondition);
         }
         catch (ClassNotFoundException | IOException e) {
             // TODO Handle this exception somehow...
@@ -250,9 +264,15 @@ public class ServerGameManager implements Runnable {
                 	}
                 }
                 
-                toPlayerOne.writeObject(moveToPlayerOne);
-                toPlayerTwo.writeObject(moveToPlayerTwo);
+                GameStatus winCondition = checkWinCondition();
 
+            	toPlayerOne.writeObject(moveToPlayerOne);
+            	toPlayerTwo.writeObject(moveToPlayerTwo);
+
+            	toPlayerOne.writeObject(winCondition);
+            	toPlayerTwo.writeObject(winCondition);
+
+            	
                 // Change turn color.
                 if (turn == PieceColor.RED)
                     turn = PieceColor.BLUE;
@@ -266,5 +286,144 @@ public class ServerGameManager implements Runnable {
                 return;
             }
         }
+    }
+    
+    private GameStatus checkWinCondition() {
+    	if(!hasAvailableMoves(PieceColor.RED))
+    		return GameStatus.RED_NO_MOVES;
+    		
+    	else if(isCaptured(PieceColor.RED))
+    		return GameStatus.RED_CAPTURED;
+    	
+    	if(!hasAvailableMoves(PieceColor.BLUE))
+    		return GameStatus.BLUE_NO_MOVES;
+    		
+    	else if(isCaptured(PieceColor.BLUE))
+    		return GameStatus.BLUE_CAPTURED;
+    	
+    	return GameStatus.IN_PROGRESS;
+    }
+    
+    private boolean isCaptured(PieceColor inColor) {
+    	if(playerOne.getColor() == inColor) {
+    		if(board.getSquare(playerOneFlag.x, playerOneFlag.y).getPiece().getPieceType() != PieceType.FLAG) 
+    			return true;
+    	}
+    	if(playerTwo.getColor() == inColor) {
+    		if(board.getSquare(playerTwoFlag.x, playerTwoFlag.y).getPiece().getPieceType() != PieceType.FLAG)
+    			return true;
+    	}
+    	return false;
+    }
+    
+    private boolean hasAvailableMoves(PieceColor inColor) {
+    	for(int row = 0; row < 10; ++row) {
+    		for(int col = 0; col < 10; ++col) {
+    			if(board.getSquare(row, col).getPiece() != null && board.getSquare(row, col).getPiece().getPieceColor() == inColor) {
+	    			if(computeValidMoves(row, col, inColor).size() > 0) {
+	    				return true;
+	    			}
+    			}
+    		}
+    	}
+    	
+    	return false;
+    }
+    
+    private ArrayList<Point> computeValidMoves(int row, int col, PieceColor inColor) {
+    	int max = 1;
+    	PieceType pieceType = board.getSquare(row, col).getPiece().getPieceType();
+    	if(pieceType == PieceType.SCOUT)
+    		max = 8;
+    	
+    	ArrayList<Point> validMoves = new ArrayList<Point>();
+    	
+    	if(pieceType != PieceType.BOMB && pieceType != PieceType.FLAG) {
+	    	// Negative Row (UP)
+	    	for(int i = -1; i >= -max; --i) {
+	    		if(isInBounds(row+i,col) && (!isLake(row+i, col) || (!isNullPiece(row+i, col) && !isOpponentPiece(row+i, col, inColor)))) {
+	    			if(isNullPiece(row+i, col) || isOpponentPiece(row+i, col, inColor)) {
+	    				validMoves.add(new Point(row+i, col));
+	    				
+	    				if(!isNullPiece(row+i, col) && isOpponentPiece(row+i, col, inColor))
+	    					break;
+	    			}
+	    			else
+	    			    break;
+	    		}
+	    		else
+	    			break;
+	    	}
+	    	// Positive Col (RIGHT)
+	    	for(int i = 1; i <= max; ++i) {
+	    		if(isInBounds(row,col+i) && (!isLake(row, col+i) || (!isNullPiece(row, col+i) && !isOpponentPiece(row, col+i, inColor)))) {
+	    			if(isNullPiece(row, col+i) || isOpponentPiece(row, col+i, inColor)) {
+	    				validMoves.add(new Point(row, col+i));
+	    				
+	    				if(!isNullPiece(row, col+i) && isOpponentPiece(row, col+i, inColor))
+	    					break;
+	    			}
+	    			else
+                        break;
+	    		}
+	    		else
+	    			break;
+	    	}
+	    	// Positive Row (DOWN)
+	    	for(int i = 1; i <= max; ++i) {
+	    		if(isInBounds(row+i,col) && (!isLake(row+i, col) || (!isNullPiece(row+i, col) && !isOpponentPiece(row+i, col, inColor)))) {
+	    			if(isNullPiece(row+i, col) || isOpponentPiece(row+i, col, inColor)) {
+	    				validMoves.add(new Point(row+i, col));
+	    				
+	    				if(!isNullPiece(row+i, col) && isOpponentPiece(row+i, col, inColor))
+	    					break;
+	    			}
+	    			else
+                        break;
+	    		}
+	    		else
+	    			break;
+	    	}
+	    	// Negative Col (LEFT)
+	    	for(int i = -1; i >= -max; --i) {
+	    		if(isInBounds(row,col+i) && (!isLake(row, col+i) || (!isNullPiece(row, col+i) && !isOpponentPiece(row, col+i, inColor)))) {
+	    			if(isNullPiece(row, col+i) || isOpponentPiece(row, col+i, inColor)) {
+	    				validMoves.add(new Point(row, col+i));
+	    				
+	    				if(!isNullPiece(row, col+i) && isOpponentPiece(row, col+i, inColor))
+	    					break;
+	    			}
+	    			else
+                        break;
+	    		}
+	    		else
+	    			break;
+	    	}
+    	}
+    	
+    	return validMoves;
+    }
+    
+    private static boolean isLake(int row, int col) {
+    	if (col == 2 || col == 3 || col == 6 || col == 7) {
+            if (row == 4 || row == 5)
+                return true;
+        }
+    	return false;
+    }
+    
+    private static boolean isInBounds(int row, int col) {
+    	if(row < 0 || row > 9)
+    		return false;
+    	if(col < 0 || col > 9)
+    		return false;
+    	
+    	return true;
+    }
+    private boolean isOpponentPiece(int row, int col, PieceColor inColor) {
+    	return board.getSquare(row, col).getPiece().getPieceColor() != inColor;
+    }
+    private boolean isNullPiece(int row, int col) {
+    	return board.getSquare(row, col).getPiece() == null;
     }
 }

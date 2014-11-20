@@ -168,11 +168,18 @@ public class ClientGameManager implements Runnable {
             BoardScene.getRootPane().getChildren().remove(BoardScene.getSetupPanel());
         });
         
-        Game.setStatus(GameStatus.IN_PROGRESS);
+        
+        try {
+			Game.setStatus((GameStatus) fromServer.readObject());
+		} catch (ClassNotFoundException | IOException e1) {
+			// TODO Handle this somehow...
+			e1.printStackTrace();
+		}
+
+        
         
         while (Game.getStatus() == GameStatus.IN_PROGRESS) {
             try {
-                
                 // Get turn color from server.
                 Game.setTurn((PieceColor) fromServer.readObject());
                 
@@ -253,12 +260,14 @@ public class ClientGameManager implements Runnable {
                 synchronized (waitFade) { waitFade.wait(); }
                 
                 // Get game status from server.
+                Game.setStatus((GameStatus) fromServer.readObject());
             }
             catch (ClassNotFoundException | IOException | InterruptedException e) {
                 // TODO Handle this exception somehow...
                 e.printStackTrace();
             }
         }
+        revealAll();
     }
 
 	public static Object getSendMove() {
@@ -267,6 +276,19 @@ public class ClientGameManager implements Runnable {
 
     public static Object getReceiveMove() {
         return receiveMove;
+    }
+    
+    private void revealAll() {
+    	// End game, reveal all pieces
+    	Platform.runLater(() -> {
+    		for(int row = 0; row < 10; row++) {
+    			for(int col = 0; col < 10; col++) {
+    				if(Game.getBoard().getSquare(row, col).getPiece() != null && Game.getBoard().getSquare(row, col).getPiece().getPieceColor() != Game.getPlayer().getColor()) {
+    					Game.getBoard().getSquare(row, col).getPiecePane().setPiece(HashTables.PIECE_MAP.get(Game.getBoard().getSquare(row, col).getPiece().getPieceSpriteKey()));
+    				}
+    			}
+    		}
+    	});
     }
     
     private class ResetSquareImage implements EventHandler<ActionEvent> {
