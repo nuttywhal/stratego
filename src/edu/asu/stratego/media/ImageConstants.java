@@ -1,7 +1,5 @@
 package edu.asu.stratego.media;
 
-import java.util.HashMap;
-
 import javafx.scene.image.Image;
 
 public class ImageConstants {

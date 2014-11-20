@@ -228,6 +228,34 @@ public class ClientGameManager implements Runnable {
             		
             		Thread.sleep(3000);
             		
+            		// Fade out pieces
+            		Platform.runLater(() -> {
+            			try {
+	                        ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
+	                        ClientSquare endSquare = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
+	                        	                        
+	                        if(Game.getMove().isAttackWin() == false) {
+		                        FadeTransition fadeStart = new FadeTransition(Duration.millis(1500), startSquare.getPiecePane().getPiece());
+		                        fadeStart.setFromValue(1.0);
+		                        fadeStart.setToValue(0.0);
+		                        fadeStart.play();
+		                        fadeStart.setOnFinished(new ResetSquareImage());
+	                        }
+	                        if(Game.getMove().isDefendWin() == false) {
+		                        FadeTransition fadeEnd = new FadeTransition(Duration.millis(1500), endSquare.getPiecePane().getPiece());
+		                        fadeEnd.setFromValue(1.0);
+		                        fadeEnd.setToValue(0.0);
+		                        fadeEnd.play();
+		                        fadeEnd.setOnFinished(new ResetSquareImage());
+	                        }
+            			}
+						catch (Exception e) {
+							// TODO Handle this somehow...
+							e.printStackTrace();
+						}
+            		});
+            		
+            		Thread.sleep(1500);
             	}
                 
                 Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).setPiece(startPiece);

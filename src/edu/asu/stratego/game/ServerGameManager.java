@@ -48,8 +48,11 @@ public class ServerGameManager implements Runnable {
         this.session = "Session " + sessionNum + ": ";
         this.socketOne = sockOne;
         this.socketTwo = sockTwo;
-        
-        this.turn = PieceColor.RED;
+
+        if (Math.random() < 0.5) 
+        	this.turn = PieceColor.RED;
+        else
+        	this.turn = PieceColor.BLUE;
     }
     
     /**
@@ -95,10 +98,10 @@ public class ServerGameManager implements Runnable {
         try {
             playerOne = (Player) fromPlayerOne.readObject();
             playerTwo = (Player) fromPlayerTwo.readObject();
+
             
-            // screw you Nelson
             //if (Math.random() < 0.5) {
-            if(Math.random() < 1) {
+            if (Math.random() < 1) {
                 playerOne.setColor(PieceColor.RED);
                 playerTwo.setColor(PieceColor.BLUE);
             }
@@ -225,12 +228,16 @@ public class ServerGameManager implements Runnable {
                     	moveToPlayerOne.setMoveColor(move.getMoveColor());
                     	moveToPlayerOne.setStartPiece(null);
                     	moveToPlayerOne.setEndPiece(attackingPiece);
+                    	moveToPlayerOne.setAttackWin(true);
+                    	moveToPlayerOne.setDefendWin(false);
 
                     	moveToPlayerTwo.setStart(new Point(move.getStart().x, move.getStart().y));
                     	moveToPlayerTwo.setEnd(new Point(move.getEnd().x, move.getEnd().y));
                     	moveToPlayerTwo.setMoveColor(move.getMoveColor());
                     	moveToPlayerTwo.setStartPiece(null);
                     	moveToPlayerTwo.setEndPiece(attackingPiece);
+                    	moveToPlayerTwo.setAttackWin(true);
+                    	moveToPlayerTwo.setDefendWin(false);
                 	}
                 	else if(outcome == BattleOutcome.LOSE) {
                         board.getSquare(move.getStart().x, move.getStart().y).setPiece(null);
@@ -241,12 +248,16 @@ public class ServerGameManager implements Runnable {
                     	moveToPlayerOne.setMoveColor(move.getMoveColor());
                     	moveToPlayerOne.setStartPiece(null);
                     	moveToPlayerOne.setEndPiece(defendingPiece);
-
+                    	moveToPlayerOne.setAttackWin(false);
+                    	moveToPlayerOne.setDefendWin(true);
+                    	
                     	moveToPlayerTwo.setStart(new Point(move.getStart().x, move.getStart().y));
                     	moveToPlayerTwo.setEnd(new Point(move.getEnd().x, move.getEnd().y));
                     	moveToPlayerTwo.setMoveColor(move.getMoveColor());
                     	moveToPlayerTwo.setStartPiece(null);
                     	moveToPlayerTwo.setEndPiece(defendingPiece);
+                    	moveToPlayerTwo.setAttackWin(false);
+                    	moveToPlayerTwo.setDefendWin(true);
                 	}
                 	else if(outcome == BattleOutcome.DRAW) {
                         board.getSquare(move.getStart().x, move.getStart().y).setPiece(null);
@@ -258,12 +269,16 @@ public class ServerGameManager implements Runnable {
                     	moveToPlayerOne.setMoveColor(move.getMoveColor());
                     	moveToPlayerOne.setStartPiece(null);
                     	moveToPlayerOne.setEndPiece(null);
-
+                    	moveToPlayerOne.setAttackWin(false);
+                    	moveToPlayerOne.setDefendWin(false);
+                    	
                     	moveToPlayerTwo.setStart(new Point(move.getStart().x, move.getStart().y));
                     	moveToPlayerTwo.setEnd(new Point(move.getEnd().x, move.getEnd().y));
                     	moveToPlayerTwo.setMoveColor(move.getMoveColor());
                     	moveToPlayerTwo.setStartPiece(null);
                     	moveToPlayerTwo.setEndPiece(null);
+                    	moveToPlayerTwo.setAttackWin(false);
+                    	moveToPlayerTwo.setDefendWin(false);
                 	}
                 }
                 

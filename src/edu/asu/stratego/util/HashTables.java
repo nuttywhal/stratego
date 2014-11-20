@@ -3,7 +3,9 @@ package edu.asu.stratego.util;
 import java.util.HashMap;
 
 import javafx.scene.image.Image;
+import javafx.scene.media.AudioClip;
 import edu.asu.stratego.media.ImageConstants;
+import edu.asu.stratego.media.SoundConstants;
 
 public class HashTables{
     // Piece Image Map (String -> Image).
@@ -38,5 +40,10 @@ public class HashTables{
         PIECE_MAP.put("BLUE_BOMB", ImageConstants.BLUE_BOMB);
         PIECE_MAP.put("BLUE_FLAG", ImageConstants.BLUE_FLAG);
         PIECE_MAP.put("BLUE_BACK", ImageConstants.BLUE_BACK);
+    }
+
+    public final static HashMap<String, AudioClip> SOUND_MAP = new HashMap<String, AudioClip>(1);
+    static {
+        SOUND_MAP.put("CORNFIELD", SoundConstants.CORNFIELD);
     }
 }

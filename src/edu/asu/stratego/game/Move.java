@@ -16,6 +16,8 @@ public class Move implements Serializable {
     private Piece endPiece;
     
     private boolean isAttack;
+    private boolean attackWin;
+    private boolean defendWin;
     
     public boolean isAttackMove() {
     	return isAttack;
@@ -83,5 +85,21 @@ public class Move implements Serializable {
 
 	public void setEndPiece(Piece endPiece) {
 		this.endPiece = endPiece;
+	}
+
+	public boolean isAttackWin() {
+		return attackWin;
+	}
+
+	public void setAttackWin(boolean attackWin) {
+		this.attackWin = attackWin;
+	}
+
+	public boolean isDefendWin() {
+		return defendWin;
+	}
+
+	public void setDefendWin(boolean defendWin) {
+		this.defendWin = defendWin;
 	}
 }
