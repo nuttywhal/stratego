@@ -7,11 +7,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-
 import edu.asu.stratego.game.Game;
 import edu.asu.stratego.gui.board.BoardTurnIndicator;
 import edu.asu.stratego.gui.board.setup.SetupPanel;
 import edu.asu.stratego.media.ImageConstants;
+import edu.asu.stratego.media.PlaySound;
 
 /**
  * Wrapper class for a JavaFX scene. Contains a scene UI and its associated 
@@ -102,6 +102,9 @@ public class BoardScene {
         root.setMaxSize(SIDE, SIDE);
         Game.getBoard().getPiecePane().setAlignment(Pos.CENTER);
         Game.getBoard().getEventPane().setAlignment(Pos.CENTER);
+        
+        // TODO Sound is here
+        PlaySound.playMusic("cornfield", 1);
         
         scene = new Scene(root, SIDE, SIDE);
     }

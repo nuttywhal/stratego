@@ -26,6 +26,7 @@ public class ClientGameManager implements Runnable {
     private static Object sendMove    = new Object();
     private static Object receiveMove = new Object();
     private static Object waitFade    = new Object();
+    private static Object waitVisible = new Object();
     
     private ObjectOutputStream toServer;
     private ObjectInputStream  fromServer;
@@ -164,11 +165,12 @@ public class ClientGameManager implements Runnable {
     }
     
     private void playGame() {
+    	// Remove setup panel
         Platform.runLater(() -> {
             BoardScene.getRootPane().getChildren().remove(BoardScene.getSetupPanel());
         });
         
-        
+        // Get game status from the server
         try {
 			Game.setStatus((GameStatus) fromServer.readObject());
 		} catch (ClassNotFoundException | IOException e1) {
@@ -177,13 +179,13 @@ public class ClientGameManager implements Runnable {
 		}
 
         
-        
+        // Main loop (when playing)
         while (Game.getStatus() == GameStatus.IN_PROGRESS) {
             try {
                 // Get turn color from server.
                 Game.setTurn((PieceColor) fromServer.readObject());
                 
-                // DAVID: If the turn is the client's, set move status to none selected
+                // If the turn is the client's, set move status to none selected
             	if(Game.getPlayer().getColor() == Game.getTurn())
             		Game.setMoveStatus(MoveStatus.NONE_SELECTED);
             	else
@@ -208,9 +210,11 @@ public class ClientGameManager implements Runnable {
                 Piece startPiece = Game.getMove().getStartPiece();
                 Piece endPiece = Game.getMove().getEndPiece();
                 
+                // If the move is an attack, not just a move to an unoccupied square
                 if(Game.getMove().isAttackMove() == true) {
             		Platform.runLater(() -> {
             			try {
+            				// Set the face images visible to both players (from the back that doesn't show piecetype)
 	                        ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
 	                        ClientSquare endSquare = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
 	                        
@@ -225,28 +229,30 @@ public class ClientGameManager implements Runnable {
 							e.printStackTrace();
 						}
             		});
-            		
+
+            		// Wait three seconds (the image is shown to client, then waits 3 seconds)
             		Thread.sleep(3000);
             		
-            		// Fade out pieces
+            		// Fade out pieces that lose (or draw)
             		Platform.runLater(() -> {
             			try {
 	                        ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
 	                        ClientSquare endSquare = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
-	                        	                        
+	                        
+	                        // If the piece dies, fade it out (also considers a draw, where both "win" are set to false)
 	                        if(Game.getMove().isAttackWin() == false) {
 		                        FadeTransition fadeStart = new FadeTransition(Duration.millis(1500), startSquare.getPiecePane().getPiece());
 		                        fadeStart.setFromValue(1.0);
 		                        fadeStart.setToValue(0.0);
 		                        fadeStart.play();
-		                        fadeStart.setOnFinished(new ResetSquareImage());
+		                        fadeStart.setOnFinished(new ResetImageVisibility());
 	                        }
 	                        if(Game.getMove().isDefendWin() == false) {
 		                        FadeTransition fadeEnd = new FadeTransition(Duration.millis(1500), endSquare.getPiecePane().getPiece());
 		                        fadeEnd.setFromValue(1.0);
 		                        fadeEnd.setToValue(0.0);
 		                        fadeEnd.play();
-		                        fadeEnd.setOnFinished(new ResetSquareImage());
+		                        fadeEnd.setOnFinished(new ResetImageVisibility());
 	                        }
             			}
 						catch (Exception e) {
@@ -255,24 +261,28 @@ public class ClientGameManager implements Runnable {
 						}
             		});
             		
+            		// Wait 1.5 seconds while the image fades out
             		Thread.sleep(1500);
             	}
-                
+
+                // Set the piece on the software (non-GUI) board to the updated pieces (either null or the winning piece)
                 Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).setPiece(startPiece);
                 Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y).setPiece(endPiece);
-                
+
                 // Update GUI.
                 Platform.runLater(() -> {
                     ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
                     ClientSquare endSquare = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
                     
-                    // Most likely (like, 99% sure) only in a draw
+                    // Draw
                     if(endPiece == null) 
                     	endSquare.getPiecePane().setPiece(null);
                     else{
+                    	// If not a draw, set the end piece to the PieceType face
                     	if(endPiece.getPieceColor() == Game.getPlayer().getColor()) {
                         	endSquare.getPiecePane().setPiece(HashTables.PIECE_MAP.get(endPiece.getPieceSpriteKey()));
                         }
+                    	// ...unless it is the opponent's piece which it will display the back instead
                         else{
 	                        if (endPiece.getPieceColor() == PieceColor.BLUE)
 	                        	endSquare.getPiecePane().setPiece(ImageConstants.BLUE_BACK);
@@ -280,14 +290,24 @@ public class ClientGameManager implements Runnable {
 	                        	endSquare.getPiecePane().setPiece(ImageConstants.RED_BACK);
                         }
                     }
-                    
+                });
+                
+                // If it is an attack, wait 0.05 seconds to allow the arrow to be visible
+                if(Game.getMove().isAttackMove()) {
+                	Thread.sleep(50);
+                }
+                
+                Platform.runLater(() -> {
                     // Arrow
                     ClientSquare arrowSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
+                    
+                    // Change the arrow to an image (and depending on what color the arrow should be)
                     if(Game.getMove().getMoveColor() == PieceColor.RED)
                     	arrowSquare.getPiecePane().setPiece(ImageConstants.MOVEARROW_RED);
                     else
                     	arrowSquare.getPiecePane().setPiece(ImageConstants.MOVEARROW_BLUE);
-                    
+
+                    // Rotate the arrow to show the direction of the move
                     if(Game.getMove().getStart().x > Game.getMove().getEnd().x) 
                     	arrowSquare.getPiecePane().getPiece().setRotate(0);
                     else if(Game.getMove().getStart().y < Game.getMove().getEnd().y) 
@@ -296,7 +316,8 @@ public class ClientGameManager implements Runnable {
                     	arrowSquare.getPiecePane().getPiece().setRotate(180);
                     else
                     	arrowSquare.getPiecePane().getPiece().setRotate(270);
-                    
+
+                    // Fade out the arrow
                     FadeTransition ft = new FadeTransition(Duration.millis(1500), arrowSquare.getPiecePane().getPiece());
                     ft.setFromValue(1.0);
                     ft.setToValue(0.0);
@@ -340,6 +361,8 @@ public class ClientGameManager implements Runnable {
     	});
     }
     
+    // Finicky, ill-advised to edit. Resets the opacity, rotation, and piece to null
+    // Duplicate "ResetImageVisibility" class was intended to not set piece to null, untested though.
     private class ResetSquareImage implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
@@ -348,6 +371,24 @@ public class ClientGameManager implements Runnable {
                 Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiecePane().getPiece().setOpacity(1.0);
                 Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiecePane().getPiece().setRotate(0.0);
                 Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiecePane().setPiece(null);
+
+                Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y).getPiecePane().getPiece().setOpacity(1.0);
+                Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y).getPiecePane().getPiece().setRotate(0.0);
+            }
+        }
+    }
+    // read above comments
+    private class ResetImageVisibility implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            synchronized (waitVisible) {
+            	waitVisible.notify();
+                Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiecePane().getPiece().setOpacity(1.0);
+                Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiecePane().getPiece().setRotate(0.0);
+                Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiecePane().setPiece(null);
+
+                Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y).getPiecePane().getPiece().setOpacity(1.0);
+                Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y).getPiecePane().getPiece().setRotate(0.0);
             }
         }
     }

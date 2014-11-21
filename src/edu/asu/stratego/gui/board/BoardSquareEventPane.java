@@ -1,5 +1,3 @@
-/* Gorgon class. For the love of Zeus, don't look at it! */
-
 package edu.asu.stratego.gui.board;
 
 import java.awt.Point;
@@ -60,22 +58,22 @@ public class BoardSquareEventPane extends GridPane {
             int row = GridPane.getRowIndex(hover);
             int col = GridPane.getColumnIndex(hover);
             
-            // DAVID: Setting up
+            // Setting up
             if (Game.getStatus() == GameStatus.SETTING_UP) {
 	            checkMove(row, col, hover);
 	        }
-            // DAVID: Waiting for opponent
+            // Waiting for opponent
             else if(Game.getStatus() == GameStatus.WAITING_OPP){ 
             	invalidMove(hover);
             }
-            // DAVID: In progress
+            // In progress
             else if(Game.getStatus() == GameStatus.IN_PROGRESS) {
             	if(Game.getMoveStatus() == MoveStatus.OPP_TURN)
             		invalidMove(hover);
             	else if(Game.getMoveStatus() == MoveStatus.NONE_SELECTED)
             		checkMove(row, col, hover);
             	else if(Game.getMoveStatus() == MoveStatus.START_SELECTED) {
-            		// TODO function to only highlight squares the piece can move to
+            		// <moved to be handled elsewhere>
             	}
             }
         };
@@ -92,6 +90,7 @@ public class BoardSquareEventPane extends GridPane {
             int row = GridPane.getRowIndex(hover);
             int col = GridPane.getColumnIndex(hover);
             
+            // Change the behavior of the off hover based on the game/move status
             if(Game.getStatus() == GameStatus.SETTING_UP)
             	hover.setImage(ImageConstants.HIGHLIGHT_NONE);
             else if(Game.getStatus() == GameStatus.WAITING_OPP) 
@@ -108,12 +107,15 @@ public class BoardSquareEventPane extends GridPane {
         };
     }
 
+    // Set the image to a red highlight indicating an invalid move
     private void invalidMove(ImageView inImage) {
     	inImage.setImage(ImageConstants.HIGHLIGHT_INVALID);
     }
+    // Set the image to a green highlight indicating a valid move
     private void validMove(ImageView inImage) {
     	inImage.setImage(ImageConstants.HIGHLIGHT_VALID);
     }
+    // Check if the move is valid and set the hover accordingly
     private void checkMove(int row, int col, ImageView inImage) {
         if (isHoverValid(row, col))
             validMove(hover);
@@ -188,8 +190,14 @@ public class BoardSquareEventPane extends GridPane {
             	// If it is the first piece being selected to move (start)
             	if(Game.getMoveStatus() == MoveStatus.NONE_SELECTED && isHoverValid(row, col)) {
             		Game.getMove().setStart(row, col);
+
+            		// Backup opacity check to fix rare race condition
+            		Game.getBoard().getSquare(row, col).getPiecePane().getPiece().setOpacity(1.0);
+
+            		// Update the movestatus to reflect a start has been selected
             		Game.setMoveStatus(MoveStatus.START_SELECTED);
             		
+            		// Calculate and display the valid moves upon selecting the piece
             		validMoves = computeValidMoves(row, col);
             		displayValidMoves(row, col);
             	}
@@ -199,20 +207,28 @@ public class BoardSquareEventPane extends GridPane {
         			if(highlightPiece.getPieceColor() == playerColor) {
                 		Game.getMove().setStart(row, col);
                 		
+                		// Backup opacity check to fix rare race condition
+                		Game.getBoard().getSquare(row, col).getPiecePane().getPiece().setOpacity(1.0);
+                		
+                		// Calculate and display the valid moves upon selecting the piece
                 		validMoves = computeValidMoves(row, col);
                 		displayValidMoves(row, col);
         			}
             	}
             	if(Game.getMoveStatus() == MoveStatus.START_SELECTED && isValidMove(row, col)) {
+            		// Remove the hover off all pieces
                     for (int rowClear = 0; rowClear < 10; ++rowClear) {
                         for (int colClear = 0; colClear < 10; ++colClear) {
                             Game.getBoard().getSquare(rowClear, colClear).getEventPane().getHover().setImage(ImageConstants.HIGHLIGHT_NONE);
                             Game.getBoard().getSquare(rowClear, colClear).getEventPane().getHover().setOpacity(1.0);
                         }
                     }
-                    
+
+                    // Set the end location and color in the move
             		Game.getMove().setEnd(row, col);
             		Game.getMove().setMoveColor(Game.getPlayer().getColor());
+
+            		// Change the movestatus to reflect that the end point has been selected
             		Game.setMoveStatus(MoveStatus.END_SELECTED);
             		
             		synchronized (ClientGameManager.getSendMove()) {
@@ -224,6 +240,7 @@ public class BoardSquareEventPane extends GridPane {
     }
     
     public boolean isValidMove(int row, int col) {
+    	// Iterate through validMoves arraylist and check if a square is a valid move (after computing valid moves)
     	if(validMoves != null && validMoves.size() > 0) {
     		for(int i = 0; i < validMoves.size(); i++) {
     			if(row == validMoves.get(i).getX() && col == validMoves.get(i).getY()) 
@@ -234,6 +251,7 @@ public class BoardSquareEventPane extends GridPane {
     }
     
     private void displayValidMoves(int pieceRow, int pieceCol) {
+    	// Iterate through and unhighlight/unglow all squares/pieces
         for (int row = 0; row < 10; ++row) {
             for (int col = 0; col < 10; ++col) {
                 Game.getBoard().getSquare(row, col).getEventPane().getHover().setImage(ImageConstants.HIGHLIGHT_NONE);
@@ -242,23 +260,32 @@ public class BoardSquareEventPane extends GridPane {
             }
         }
 
+        // Glow and set a white highlight around the selected piece
         Game.getBoard().getSquare(pieceRow,pieceCol).getPiecePane().getPiece().setEffect(new Glow(0.75));                      
         Game.getBoard().getSquare(pieceRow,pieceCol).getEventPane().getHover().setImage(ImageConstants.HIGHLIGHT_WHITE);
 
-        
+        // Iterate through all valid moves and highlight respective squares
         for (Point validMove : validMoves) {
             Game.getBoard().getSquare((int) validMove.getX(), (int) validMove.getY()).getEventPane().getHover().setImage(ImageConstants.HIGHLIGHT_VALID);
             Game.getBoard().getSquare((int) validMove.getX(), (int) validMove.getY()).getEventPane().getHover().setOpacity(0.5);
         }
     }
     
-    private ArrayList<Point> computeValidMoves(int row, int col) {
+    private ArrayList<Point> computeValidMoves(int row, int col) {    	
+    	// Set the max distance of a valid move to 1
     	int max = 1;
+    	
+    	// Set the max distance of a valid move to the board width if the piece is a scout
     	PieceType pieceType = Game.getBoard().getSquare(row, col).getPiece().getPieceType();
     	if(pieceType == PieceType.SCOUT)
     		max = 8;
     	
     	ArrayList<Point> validMoves = new ArrayList<Point>();
+    	
+    	// Iterate through each direction and add valid moves based on if:
+    	// 1) The square is in bounds (inside the board)
+    	// 2) If the square is not a lake
+    	// 3) If the square has no piece on it OR there is a piece, but it is an opponent piece
     	
     	if(pieceType != PieceType.BOMB && pieceType != PieceType.FLAG) {
 	    	// Negative Row (UP)
@@ -325,7 +352,8 @@ public class BoardSquareEventPane extends GridPane {
     	
     	return validMoves;
     }
-    
+
+    // Returns true if the given square is a lake
     private static boolean isLake(int row, int col) {
     	if (col == 2 || col == 3 || col == 6 || col == 7) {
             if (row == 4 || row == 5)
@@ -334,6 +362,7 @@ public class BoardSquareEventPane extends GridPane {
     	return false;
     }
     
+    // Returns false if the given square is outside of the board
     private static boolean isInBounds(int row, int col) {
     	if(row < 0 || row > 9)
     		return false;
@@ -342,9 +371,13 @@ public class BoardSquareEventPane extends GridPane {
     	
     	return true;
     }
+    
+    // Returns true if the piece is the opponent (from the client's perspective)
     private static boolean isOpponentPiece(int row, int col) {
     	return Game.getBoard().getSquare(row, col).getPiece().getPieceColor() != Game.getPlayer().getColor();
     }
+    
+    // Returns true if the piece is null
     private static boolean isNullPiece(int row, int col) {
     	return Game.getBoard().getSquare(row, col).getPiece() == null;
     }
@@ -356,33 +389,43 @@ public class BoardSquareEventPane extends GridPane {
     public static void randomSetup() {
         PieceColor playerColor = Game.getPlayer().getColor();
         
+        // Iterate through each square
         for (int col = 0; col < 10; ++col) {
             for (int row = 6; row < 10; ++row) {
                 BoardSquarePane squarePane = Game.getBoard().getSquare(row, col).getPiecePane();
                 ClientSquare square = Game.getBoard().getSquare(row, col);
                 Piece squarePiece = square.getPiece();
                
+                // Create an arraylist of all the available values
                 ArrayList<PieceType> availTypes = 
                         new ArrayList<PieceType>(Arrays.asList(PieceType.values()));
-               
+
+                // If the square is null (will not overwrite existing pieces)
                 if(squarePiece == null) {
-                        PieceType pieceType = null;
-                       
+                    PieceType pieceType = null;
+                     
+                    // While the pieceType that is going to be placed is null, loop finding a random one
+                    // checking that its count is > 0
                     while(pieceType == null) {
                         int randInt = (int) (Math.random() * availTypes.size());
                         if(SetupPieces.getPieceCount(availTypes.get(randInt)) > 0)
                             pieceType = availTypes.get(randInt);
+                        // There are no more available for that piecetype, remove it from the array so it won't be randomly generated again
                         else
                             availTypes.remove(randInt);
                     }
-                   
+
+                    // Set the square to the piecetype once a suitable piecetype has been found
                     square.setPiece(new Piece(pieceType, playerColor, false));
                     squarePane.setPiece(HashTables.PIECE_MAP.get(square.getPiece().getPieceSpriteKey()));
+
+                    // And lower the availability count of that piece
                     SetupPieces.decrementPieceCount(pieceType);
                 }
             }
         }
         
+        // Trigger finishSetup so the game will begin
         SetupPanel.finishSetup();
     }
     
@@ -422,7 +465,6 @@ public class BoardSquareEventPane extends GridPane {
         				return false;
         		} else 
         			return false;
-
         	}
         }
         

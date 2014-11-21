@@ -100,8 +100,7 @@ public class ServerGameManager implements Runnable {
             playerTwo = (Player) fromPlayerTwo.readObject();
 
             
-            //if (Math.random() < 0.5) {
-            if (Math.random() < 1) {
+            if (Math.random() < 0.5) {
                 playerOne.setColor(PieceColor.RED);
                 playerTwo.setColor(PieceColor.BLUE);
             }

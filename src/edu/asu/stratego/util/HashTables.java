@@ -44,6 +44,6 @@ public class HashTables{
 
     public final static HashMap<String, AudioClip> SOUND_MAP = new HashMap<String, AudioClip>(1);
     static {
-        SOUND_MAP.put("CORNFIELD", SoundConstants.CORNFIELD);
+        SOUND_MAP.put("cornfield", SoundConstants.CORNFIELD);
     }
 }

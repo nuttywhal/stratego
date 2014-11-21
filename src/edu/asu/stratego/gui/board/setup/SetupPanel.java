@@ -50,7 +50,7 @@ public class SetupPanel {
         setupPanel.setStyle("-fx-background-image: url(" + backgroundURL + "); " + 
                       "-fx-background-size: " + UNIT * 10 + " " + UNIT * 5 + ";" +
                       "-fx-background-repeat: stretch;");
-
+        
         
         /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
          *                                                                               *
