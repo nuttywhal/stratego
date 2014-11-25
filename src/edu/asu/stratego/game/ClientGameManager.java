@@ -209,9 +209,57 @@ public class ClientGameManager implements Runnable {
                 Game.setMove((Move) fromServer.readObject());
                 Piece startPiece = Game.getMove().getStartPiece();
                 Piece endPiece = Game.getMove().getEndPiece();
-                
+                                
                 // If the move is an attack, not just a move to an unoccupied square
                 if(Game.getMove().isAttackMove() == true) {
+                	Piece attackingPiece = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).getPiece();
+                	if(attackingPiece.getPieceType() == PieceType.SCOUT) {
+                		// Check if the scout is attacking over more than one square
+                		int moveX = Game.getMove().getStart().x - Game.getMove().getEnd().x;
+                		int moveY = Game.getMove().getStart().y - Game.getMove().getEnd().y;
+                		
+                		if(Math.abs(moveX) > 1 || Math.abs(moveY) > 1) {
+                			Platform.runLater(() -> {
+                				try{ 
+                					int shiftX = 0;
+                					int shiftY = 0;
+                					
+                					if(moveX > 0) {shiftX = 1;}
+                					else if(moveX < 0) {shiftX = -1;}
+                					else if(moveY > 0) {shiftY = 1;}
+                					else if(moveY < 0) {shiftY = -1;}
+                					
+                					// Move the scout in front of the piece it's attacking before actually fading out
+                					ClientSquare scoutSquare = Game.getBoard().getSquare(Game.getMove().getEnd().x+shiftX, Game.getMove().getEnd().y+shiftY);
+                					ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
+                					scoutSquare.getPiecePane().setPiece(HashTables.PIECE_MAP.get(startSquare.getPiece().getPieceSpriteKey()));
+                					startSquare.getPiecePane().setPiece(null);
+                				}
+        						catch (Exception e) {
+        							// TODO Handle this somehow...
+        							e.printStackTrace();
+        						}
+                			});
+
+                			// Wait 1 second after moving the scout in front of the piece it's going to attack
+                			Thread.sleep(1000);
+
+        					int shiftX = 0;
+        					int shiftY = 0;
+        					
+        					if(moveX > 0) {shiftX = 1;}
+        					else if(moveX < 0) {shiftX = -1;}
+        					else if(moveY > 0) {shiftY = 1;}
+        					else if(moveY < 0) {shiftY = -1;}
+        					ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
+        					
+        					// Fix the clientside software boards (and move) to reflect new scout location, now attacks like a normal piece
+        					Game.getBoard().getSquare(Game.getMove().getEnd().x+shiftX, Game.getMove().getEnd().y+shiftY).setPiece(startSquare.getPiece());
+        					Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y).setPiece(null);
+        					
+                			Game.getMove().setStart(Game.getMove().getEnd().x+shiftX, Game.getMove().getEnd().y+shiftY);
+                		}
+                	}
             		Platform.runLater(() -> {
             			try {
             				// Set the face images visible to both players (from the back that doesn't show piecetype)
@@ -230,8 +278,8 @@ public class ClientGameManager implements Runnable {
 						}
             		});
 
-            		// Wait three seconds (the image is shown to client, then waits 3 seconds)
-            		Thread.sleep(3000);
+            		// Wait three seconds (the image is shown to client, then waits 2 seconds)
+            		Thread.sleep(2000);
             		
             		// Fade out pieces that lose (or draw)
             		Platform.runLater(() -> {
