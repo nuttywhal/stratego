@@ -19,7 +19,6 @@ import edu.asu.stratego.game.Game;
 import edu.asu.stratego.gui.ClientStage;
 import edu.asu.stratego.media.ImageConstants;
 import edu.asu.stratego.media.PlaySound;
-import edu.asu.stratego.media.SoundConstants;
 
 /**
  * The panel that is shown during the SETTING_UP phase of a Stratego game.

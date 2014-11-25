@@ -6,7 +6,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import edu.asu.stratego.game.Game;
-import edu.asu.stratego.game.GameStatus;
 import edu.asu.stratego.game.PieceColor;
 import edu.asu.stratego.gui.ClientStage;
 

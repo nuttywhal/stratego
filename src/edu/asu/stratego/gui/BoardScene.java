@@ -103,8 +103,6 @@ public class BoardScene {
         Game.getBoard().getPiecePane().setAlignment(Pos.CENTER);
         Game.getBoard().getEventPane().setAlignment(Pos.CENTER);
         
-        // TODO Sound is here
-        PlaySound.playMusic("cornfield", 1);
         
         scene = new Scene(root, SIDE, SIDE);
     }
