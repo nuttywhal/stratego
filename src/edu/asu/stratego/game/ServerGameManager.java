@@ -166,9 +166,7 @@ public class ServerGameManager implements Runnable {
         
     }
     
-    private void playGame() {
-        // TODO Implement method to check for legal moves.
-        
+    private void playGame() {       
         while (true) {
             try {
                 // Send player turn color to clients.

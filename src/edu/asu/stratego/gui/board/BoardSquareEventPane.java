@@ -86,10 +86,7 @@ public class BoardSquareEventPane extends GridPane {
     private class OffHover implements EventHandler<MouseEvent> {
         @Override
         public void handle(MouseEvent e) {
-            ImageView hover = (ImageView) e.getSource();
-            int row = GridPane.getRowIndex(hover);
-            int col = GridPane.getColumnIndex(hover);
-            
+            ImageView hover = (ImageView) e.getSource();            
             // Change the behavior of the off hover based on the game/move status
             if(Game.getStatus() == GameStatus.SETTING_UP)
             	hover.setImage(ImageConstants.HIGHLIGHT_NONE);
@@ -101,7 +98,7 @@ public class BoardSquareEventPane extends GridPane {
             	else if(Game.getMoveStatus() == MoveStatus.NONE_SELECTED)
             		hover.setImage(ImageConstants.HIGHLIGHT_NONE);
             	else if(Game.getMoveStatus() == MoveStatus.START_SELECTED) {
-            		// TODO function to only allow highlighting of squares piece can move to 
+            		// Moved elsewhere: Function to only allow highlighting of squares piece can move to 
             	}
             }
         };

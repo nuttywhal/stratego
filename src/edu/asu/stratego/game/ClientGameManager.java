@@ -319,7 +319,7 @@ public class ClientGameManager implements Runnable {
 
                 // Update GUI.
                 Platform.runLater(() -> {
-                    ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
+                    // obselete: ClientSquare startSquare = Game.getBoard().getSquare(Game.getMove().getStart().x, Game.getMove().getStart().y);
                     ClientSquare endSquare = Game.getBoard().getSquare(Game.getMove().getEnd().x, Game.getMove().getEnd().y);
                     
                     // Draw

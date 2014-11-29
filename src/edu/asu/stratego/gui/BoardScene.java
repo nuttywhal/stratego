@@ -31,14 +31,7 @@ public class BoardScene {
      * Creates a new instance of BoardScene.
      */
     public BoardScene() {
-        
-//        // TODO !!! Remove after development is complete. !!!
-//        Game.getPlayer().setNickname("Player 1");
-//        Game.getOpponent().setNickname("Player 2");
-//        Game.getPlayer().setColor(PieceColor.BLUE);
-//        Game.getOpponent().setColor(PieceColor.RED);
-//        // TODO !!! Remove after development is complete. !!!
-        
+                
         /* ================ Board Design ================
          * 
          * The scene is divided into a 12 x 12 grid.
@@ -72,6 +65,10 @@ public class BoardScene {
         // Set the background color (turn indicator).
         BoardTurnIndicator indicator = new BoardTurnIndicator();
         Rectangle background = BoardTurnIndicator.getTurnIndicator();
+        
+        
+        // TODO Sound test here
+        //PlaySound.playMusic("cornfield", 1);
         
         // Resize the board.
         final int size = 10;
