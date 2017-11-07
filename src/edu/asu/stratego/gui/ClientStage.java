@@ -23,6 +23,11 @@ public class ClientStage extends Stage {
      * Creates a new instance of ClientStage.
      */
     public ClientStage() {
+        // Calculate the BoardScene dimensions from screen resolution.
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        SIDE = (int) (0.85 * screenSize.getHeight()) / 12 * 12;
+        UNIT = SIDE / 12;
+        
         setConnectionScene();
         this.setTitle("ASU Stratego");
         this.setResizable(false);

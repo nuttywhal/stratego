@@ -1,4 +1,4 @@
-spackage edu.asu.stratego.gui.board;
+package edu.asu.stratego.gui.board;
 
 import javafx.scene.layout.GridPane;
 
